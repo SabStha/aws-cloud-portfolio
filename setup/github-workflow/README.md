@@ -3,7 +3,7 @@
 ## What I set up
 - This repo, `aws-cloud-portfolio`, is my public portfolio. All ticket work arrives through pull requests.
 - Starter kit: `.gitignore` (blocks secrets, Terraform state, build output), a PR template, `tools/verify-workstation.sh`, and `docs/POSTMORTEM_TEMPLATE.md`.
-- A ruleset called `protect-main` on the default branch: requires a pull request, blocks force pushes and branch deletion. The bypass list is empty, so it applies to me as admin too. Required approvals is 0 because I am the only engineer.
+- A ruleset called `protect-main` on the default branch: requires a pull request before merging (0 approvals). The bypass list is empty, so it applies to me as admin too. Required approvals is 0 because I am the only engineer.
 
 ## Why
 Nothing reaches `main` without a pull request. Every change gets a branch, a description and a reviewable diff, the same habit a real team expects. The `.gitignore` is a second safety net against committing keys.
