@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# vpc-check: say PUBLIC or PRIVATE for each subnet in sw-vpc, from its route table.
+export AWS_PROFILE=stratus AWS_REGION=ap-northeast-1
+VPC=$(aws ec2 describe-vpcs --filters Name=tag:Name,Values=sw-vpc --query 'Vpcs[0].VpcId' --output text)
+echo "VPC $VPC"
+aws ec2 describe-subnets --filters Name=vpc-id,Values="$VPC" \
+  --query 'Subnets[].[SubnetId,Tags[?Key==`Name`]|[0].Value,AvailabilityZone,CidrBlock]' --output text |
+while read -r id name az cidr; do
+  gw=$(aws ec2 describe-route-tables --filters Name=association.subnet-id,Values="$id" \
+        --query 'RouteTables[0].Routes[?DestinationCidrBlock==`0.0.0.0/0`].GatewayId' --output text)
+  case "$gw" in igw-*) kind=PUBLIC ;; *) kind=PRIVATE ;; esac
+  printf '%-8s %-11s %-16s %-15s %s\n' "$kind" "$name" "$az" "$cidr" "${gw:-no internet route}"
+done
