@@ -1,0 +1,5 @@
+VPC vpc-0ea1b7b525f09ebea
+PRIVATE  public-a    ap-northeast-1a  10.20.0.0/24    no internet route
+PRIVATE  private-a   ap-northeast-1a  10.20.10.0/24   no internet route
+PRIVATE  public-c    ap-northeast-1c  10.20.1.0/24    no internet route
+PRIVATE  private-c   ap-northeast-1c  10.20.11.0/24   no internet route

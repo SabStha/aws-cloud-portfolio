@@ -1,0 +1,46 @@
+[
+    {
+        "table": "rtb-002ef5394065fbfc9",
+        "subnets": [],
+        "routes": [
+            [
+                "10.20.0.0/16",
+                "local",
+                null
+            ]
+        ]
+    },
+    {
+        "table": "rtb-0aa853fbfbdb5047d",
+        "subnets": [
+            "subnet-0ab6f9acf71392174",
+            "subnet-0538f2d54458fdfd7"
+        ],
+        "routes": [
+            [
+                "10.20.0.0/16",
+                "local",
+                null
+            ],
+            [
+                "0.0.0.0/0",
+                "igw-0d95386c42fe1501c",
+                null
+            ]
+        ]
+    },
+    {
+        "table": "rtb-092b4cb167e65e6ed",
+        "subnets": [
+            "subnet-0898658eeabfe41da",
+            "subnet-09ad60645bee80379"
+        ],
+        "routes": [
+            [
+                "10.20.0.0/16",
+                "local",
+                null
+            ]
+        ]
+    }
+]
