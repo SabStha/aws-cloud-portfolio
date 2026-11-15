@@ -1,0 +1,13 @@
+POLICYNAMES	dynamodb-getitem-sw-orders
+POLICYNAMES	logs-only
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ReadOneOrderFromSwOrders",
+            "Effect": "Allow",
+            "Action": "dynamodb:GetItem",
+            "Resource": "arn:aws:dynamodb:ap-northeast-1:********9552:table/sw-orders"
+        }
+    ]
+}

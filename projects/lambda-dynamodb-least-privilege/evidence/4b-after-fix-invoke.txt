@@ -1,0 +1,12 @@
+== payload: {"order_id":"1001"}
+None
+{"statusCode": 200, "body": "{\"price_jpy\": \"1200\", \"order_id\": \"1001\", \"item\": \"ramen\"}"}
+
+== payload: {"order_id":"9999"}
+None
+{"statusCode": 404, "body": "{\"error\": \"order 9999 not found\"}"}
+
+== payload: {}
+None
+{"statusCode": 400, "body": "{\"error\": \"order_id is required\"}"}
+

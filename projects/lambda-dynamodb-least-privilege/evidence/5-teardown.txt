@@ -1,0 +1,16 @@
+{
+    "StatusCode": 204
+}
+deleted function sw-order-lookup
+deleted policy dynamodb-getitem-sw-orders
+deleted policy logs-only
+deleted role sw-order-lookup-role
+deleted log group /aws/lambda/sw-order-lookup
+deleting table sw-orders...
+deleted table sw-orders
+
+== Proof: each check must say GONE
+GONE          function sw-order-lookup
+GONE          role sw-order-lookup-role
+GONE          table sw-orders
+GONE          log group /aws/lambda/sw-order-lookup
