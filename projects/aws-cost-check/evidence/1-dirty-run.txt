@@ -1,0 +1,15 @@
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-TableManagerCustomProvid-8C3X16ac6dpR nodejs24.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-spendguardlambda6FCE0827-sQtcfjds5SjX nodejs22.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-CustomCDKBucketDeploymen-eRZ4rcOudIJT python3.13   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-TableManagerCustomProvid-V98SuhpZ3GcW nodejs24.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-billingreportlambda9CD67-aFn8EaJuR9lT nodejs22.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-main-jobintellambda4B032B65-j0mND0BhDtYN nodejs22.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-CustomS3AutoDeleteObject-zPuKfupdj6eH nodejs24.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-AmplifyBranchLinkerCusto-C9qwa2Prvz24 nodejs24.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-backupexportlambdaA35D4F-aqfHg8Fvc4Fa nodejs22.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-LogRetentionaae0aa3c5b4d-GcVrlwxMNTjd nodejs24.x   info only: no cost when idle
+ap-northeast-1   Lambda   amplify-d2zk4qdz5qx2dj-ma-AmplifyBranchLinkerCusto-nFUNeedEh0HB nodejs22.x   info only: no cost when idle
+ap-northeast-1   Lambda   contactFormHandler           nodejs26.x   info only: no cost when idle
+ap-northeast-3   EBS      vol-0c196ea35fed15f50        available    1 GiB, ~0.10 USD/month (est., Tokyo price)
+Result: 1 billable resource(s) found
+exit code: 1

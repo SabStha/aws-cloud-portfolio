@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# cost-check: list anything that still costs money, in every enabled region.
+# Exit 0 = clean, 1 = something billable was found (so other scripts can stop on it).
+export AWS_PROFILE=stratus
+GP3_USD=0.096   # Tokyo gp3 price per GB-month (round 2). Used as an estimate for all regions.
+
+# Colour only when printing to a real terminal (no junk characters in files).
+if [ -t 1 ]; then RED=$(tput setaf 1); RESET=$(tput sgr0); else RED=""; RESET=""; fi
+
+# Print one red row: region, type, id, state, note
+row() { printf '%s%-16s %-8s %-28s %-12s %s%s\n' "$RED" "$1" "$2" "$3" "$4" "$5" "$RESET"; }
+# Print one plain row for things that are listed but NOT counted (no cost when idle)
+info() { printf '%-16s %-8s %-28s %-12s %s\n' "$1" "$2" "$3" "$4" "$5"; }
+
+# ONE inspector: checks ONE region and prints one row per billable thing. No loop, no counting.
+check_region() {
+  local r="$1"
+
+  # 1. EBS volumes (bill per GB-month, attached or not)
+  while read -r id state size; do
+    [ -z "$id" ] && continue
+    cost=$(awk -v s="$size" -v p="$GP3_USD" 'BEGIN { printf "%.2f", s * p }')
+    row "$r" EBS "$id" "$state" "${size} GiB, ~${cost} USD/month (est., Tokyo price)"
+  done <<< "$(aws ec2 describe-volumes --region "$r" --query 'Volumes[].[VolumeId,State,Size]' --output text)"
+
+  # 2. EC2 instances, running or stopped (stopped ones still pay for their disks)
+  while read -r id state type; do
+    [ -z "$id" ] && continue
+    row "$r" EC2 "$id" "$state" "$type, running bills per hour; stopped still bills its EBS"
+  done <<< "$(aws ec2 describe-instances --region "$r" --filters Name=instance-state-name,Values=running,stopped --query 'Reservations[].Instances[].[InstanceId,State.Name,InstanceType]' --output text)"
+
+  # 3. Elastic IPs attached to nothing
+  while read -r alloc ip; do
+    [ -z "$alloc" ] && continue
+    row "$r" EIP "$alloc" "$ip" "not attached, bills per hour"
+  done <<< "$(aws ec2 describe-addresses --region "$r" --query 'Addresses[?AssociationId==null].[AllocationId,PublicIp]' --output text)"
+
+  # 4. NAT gateways (bill per hour even with no traffic)
+  while read -r id state; do
+    [ -z "$id" ] && continue
+    row "$r" NAT "$id" "$state" "bills per hour plus per GB"
+  done <<< "$(aws ec2 describe-nat-gateways --region "$r" --filter Name=state,Values=available --query 'NatGateways[].[NatGatewayId,State]' --output text)"
+
+  # 5a. Load balancers: ALB / NLB
+  while read -r name type; do
+    [ -z "$name" ] && continue
+    row "$r" LB "$name" "$type" "bills per hour plus capacity units"
+  done <<< "$(aws elbv2 describe-load-balancers --region "$r" --query 'LoadBalancers[].[LoadBalancerName,Type]' --output text)"
+
+  # 5b. Load balancers: Classic
+  while read -r name; do
+    [ -z "$name" ] && continue
+    row "$r" LB "$name" classic "bills per hour plus per GB"
+  done <<< "$(aws elb describe-load-balancers --region "$r" --query 'LoadBalancerDescriptions[].[LoadBalancerName]' --output text)"
+
+  # 6. RDS databases (instance hours plus storage)
+  while read -r id state; do
+    [ -z "$id" ] && continue
+    row "$r" RDS "$id" "$state" "bills per hour plus storage"
+  done <<< "$(aws rds describe-db-instances --region "$r" --query 'DBInstances[].[DBInstanceIdentifier,DBInstanceStatus]' --output text)"
+
+  # 7. Lambda functions (no cost when idle, listed so forgotten projects are visible)
+  while read -r name runtime; do
+    [ -z "$name" ] && continue
+    info "$r" Lambda "$name" "$runtime" "info only: no cost when idle"
+  done <<< "$(aws lambda list-functions --region "$r" --query 'Functions[].[FunctionName,Runtime]' --output text)"
+}
+
+# THE BOSS: send one inspector per region, all at once, each writing its own report
+tmp=$(mktemp -d)
+MAX_JOBS=6   # at most 6 regions at once: each aws command is a heavy process
+for r in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text); do
+  while [ "$(jobs -rp | wc -l)" -ge "$MAX_JOBS" ]; do wait -n; done   # a free slot?
+  check_region "$r" > "$tmp/$r.txt" &
+done
+wait   # wait until every inspector is back
+
+# Read the reports and count them (one line = one billable thing)
+cat "$tmp"/*.txt
+found=$(cat "$tmp"/*.txt | grep -vc ' Lambda ')   # Lambda rows are info, not counted
+rm -rf "$tmp"
+
+echo "Result: $found billable resource(s) found"
+exit $(( found > 0 ))
