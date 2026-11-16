@@ -72,3 +72,22 @@ Keyword matching here also stands in for real search. On AWS it is replaced by a
 ## How this was built
 
 The design, the test cases and the file structure were drafted with AI help. I wrote the gate's rules step by step against the failing tests, made the mistakes listed above, and fixed them. The final phrase list was completed with AI help and checked by me against all 30 tests.
+
+## Step 2: the documents on AWS (Bedrock Knowledge Base)
+
+The 15 documents are in a private S3 bucket, each with a label file (`kb-docs/*.metadata.json`) holding its version, review status and audience. A Bedrock Knowledge Base (managed type, Tokyo) indexes them.
+
+**The filter works.** Searching "secret inventory credential export" with no filter returned the senior-only, draft and poisoned documents as the top three results. With the filter (exact version, `APPROVED`, `support`) none of them came back. Versions with no documents return nothing at all.
+
+**The scores do not work.** I ran all 30 test questions through the real search ([evidence/retrieval-scores.txt](evidence/retrieval-scores.txt), script: `retrieve_tests.py`):
+
+| Kind of question | Top score |
+|---|---|
+| Should be answered | 0.81 to 0.86 |
+| Has no answer in the documents | 0.81 to 0.87 |
+
+A question about a feature that doesn't exist scored the same as a correct match, so "enough evidence" cannot be a score threshold, which was my original plan. Search always returns its nearest documents, relevant or not. The right document was the top result for 9 of the 10 answerable questions.
+
+Without a filter, an AI model given these results did refuse the injected instruction, but it also described all three restricted documents to the user. Refusing is not the same as hiding: the filter has to remove documents before the model sees them.
+
+**Next:** in the Lambda step, a narrow yes/no relevance check per retrieved document, with the final decision still made by code, measured against the same 30 tests.
