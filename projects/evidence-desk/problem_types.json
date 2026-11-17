@@ -211,6 +211,67 @@
         "licence_tier": "Availability is per licence tier. Most of these are answerable from the capability table with no search at all."
       },
       "derived_from": "the feature matrices on the spec page and in the brochures"
+    },
+    {
+      "key": "upgrade_procedure",
+      "label": "How to upgrade, and what it depends on",
+      "cues": [
+        "upgrade from",
+        "upgrade to",
+        "update from",
+        "update to",
+        "dependencies",
+        "dependency",
+        "prerequisite",
+        "バージョンアップ",
+        "アップグレード手順"
+      ],
+      "facts": {
+        "product": "Each product has its own upgrade path and its own release notes.",
+        "version": "The version they are on now decides which upgrade steps apply and which release notes to read.",
+        "os": "The upgrade procedure differs between Windows and Linux."
+      },
+      "derived_from": "real inquiry, 17 November 2026: how do I upgrade from 2.4.0 to 2.9.1, does it have dependencies"
+    },
+    {
+      "key": "capacity_limit",
+      "label": "A licence or capacity limit has been reached",
+      "cues": [
+        "increase",
+        "how many",
+        "maximum",
+        "device limit",
+        "licence limit",
+        "license limit",
+        "devices registered",
+        "上限",
+        "登録台数"
+      ],
+      "facts": {
+        "product": "Limits are per product.",
+        "licence_tier": "The limit IS the licence: the free tier allows 10 devices, the paid tiers allow more. This is the answer, not a step towards it.",
+        "device_count": "The current count against the limit says whether this needs a licence change or a configuration fix."
+      },
+      "derived_from": "real inquiry, 17 November 2026: 1000 devices registered, how do I increase it to 1001"
+    },
+    {
+      "key": "how_it_works",
+      "label": "How something works, or what a format is",
+      "cues": [
+        "how does",
+        "what is the format",
+        "what format",
+        "log format",
+        "specification",
+        "spec sheet",
+        "とは",
+        "仕様",
+        "どのように"
+      ],
+      "facts": {
+        "product": "The answer comes from that product's own specification page."
+      },
+      "derived_from": "real inquiry, 17 November 2026: how does syslog work and what is the log format"
     }
   ],
   "fact_cues": {
@@ -305,6 +366,12 @@
       "変更",
       "以降",
       "移行"
+    ],
+    "device_count": [
+      "devices registered",
+      "registered devices",
+      "登録台数",
+      "台数"
     ]
   },
   "questions": {
@@ -347,12 +414,15 @@
     "recent_change": [
       "Did this work before, and did anything change just before it stopped?",
       "以前は正常に動作していましたか。停止直前に変更した点はございますか。"
+    ],
+    "device_count": [
+      "How many devices are registered, and what is the licence limit?",
+      "登録台数とライセンス上限をご教示ください。"
     ]
   },
   "unknown_fallback": {
     "product": "Needed for any problem, whatever it turns out to be.",
-    "version": "Needed for any problem, whatever it turns out to be.",
-    "recent_change": "Narrows almost every investigation before it starts."
+    "version": "Needed for any problem, whatever it turns out to be."
   },
   "evidence_rules": [
     {
@@ -397,7 +467,8 @@
     "snmp_version": "SNMP version on the target",
     "ssl_enabled": "SSL/HTTPS enabled?",
     "port_changed": "web port changed from default?",
-    "recent_change": "what changed, and did it ever work"
+    "recent_change": "what changed, and did it ever work",
+    "device_count": "how many devices are registered, and the licence limit"
   },
   "fact_sources": {
     "product": "internal",
@@ -409,7 +480,8 @@
     "snmp_version": "customer",
     "ssl_enabled": "customer",
     "port_changed": "customer",
-    "recent_change": "customer"
+    "recent_change": "customer",
+    "device_count": "customer"
   },
   "_output_audience": "The engine's output is for the support engineer, not the customer. Facts are split into what the engineer can look up internally and what only the customer can answer. Customer-facing wording is a separate, later concern.",
   "_cue_decisions": [
@@ -428,6 +500,11 @@
       "fact": "snmp_version in monitoring_no_data",
       "action": "depends_on device_vendor replaced with only_if_text",
       "reason": "the dependency said skip this when the vendor is known, but the intent was ask this only when SNMP is in play. On a real SNMP fault with a known vendor it stayed silent about the one fact that decides the case (test case K1)."
+    },
+    {
+      "action": "three problem types added, recent_change removed from unknown_fallback",
+      "reason": "four real inquiries were run through the engine on 17 Nov 2026 and three of the four were not recognised. The nine original types came from reading documentation, which describes faults. Real customers also ask about procedures, concepts and limits. The fallback was telling the customer to explain what changed on a question about a device limit, where nothing had changed.",
+      "provenance": "real inquiries, not derived from the corpus"
     }
   ]
 }

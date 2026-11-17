@@ -8,8 +8,12 @@ from gate import BLOCKED_PHRASES, DOCS
 
 KB = "LBOXPJZS9Z"
 REGION = "ap-northeast-1"
-MODEL = os.environ.get("ED_MODEL", "amazon.nova-2-lite-v1:0")
+MODEL = os.environ.get("ED_MODEL", "jp.amazon.nova-2-lite-v1:0")
+# The bare model ID is not served on demand in this region: it must be an
+# inference profile, hence the jp. prefix. Override with ED_MODEL.
 BY_ID = {d["id"]: d for d in DOCS}
+import triage as _tri   # triage is a FALLBACK here, never a gate: see README step 6
+
 USAGE = {"in": 0, "out": 0, "calls": 0}
 
 JUDGE_PROMPT = """You check evidence for a support team. Decide whether the DOCUMENT directly addresses the QUESTION.
@@ -101,6 +105,18 @@ def main():
         ok = status == t["expected"]; passed += ok
         mark = "" if ok else "   <-- differs"
         print(f'{t["id"]:<6} {t["expected"]:<11} {status:<11} {",".join(used) or "-":<22} {reason}{mark}')
+        if status == "UNRESOLVED":
+            # The evidence ran out. Say what would close the gap instead of stopping.
+            _k, _known, _gaps = _tri.triage(t["question"] + " version " + str(t.get("version") or ""))
+            _ask = [g["label"] for g in _gaps if g["source"] == "customer"]
+            _self = [g["label"] for g in _gaps if g["source"] == "internal"]
+            if _ask or _self:
+                _bits = []
+                if _self:
+                    _bits.append("check: " + ", ".join(_self))
+                if _ask:
+                    _bits.append("ask: " + ", ".join(_ask))
+                print(f'{"":<6} {"":<11} {"":<11} {"next step":<22} ' + " | ".join(_bits))
     print(f"\nScore: {passed} / {len(tests)}")
     print(f'Model calls: {USAGE["calls"]}  tokens in/out: {USAGE["in"]}/{USAGE["out"]}')
 

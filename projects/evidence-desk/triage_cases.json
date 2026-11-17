@@ -208,16 +208,16 @@
   "expect_kind": null,
   "must_ask": [
    "product",
-   "version",
-   "recent_change"
+   "version"
   ],
   "must_not_ask": [
    "os",
    "licence_tier",
-   "collection_method"
+   "collection_method",
+   "recent_change"
   ],
   "trap": "no cue matches anything",
-  "note": "unknown must fall back to three facts, not guess a type"
+  "note": "unrecognised, so the customer is asked nothing at all"
  },
  {
   "id": "T3",
@@ -406,5 +406,73 @@
   ],
   "trap": "the vendor is known, which currently suppresses the SNMP question",
   "note": "SNMP v1 is not enough for the item scan, so the version must be asked whenever SNMP is in play, vendor known or not"
+ },
+ {
+  "id": "R1",
+  "text": "How do I upgrade from 2.4.0 to 2.9.1? Does it have dependencies?",
+  "expect_kind": "upgrade_procedure",
+  "must_ask": [
+   "product",
+   "os"
+  ],
+  "must_not_ask": [
+   "recent_change",
+   "version",
+   "licence_tier",
+   "collection_method",
+   "device_vendor"
+  ],
+  "note": "REAL inquiry. The version is stated, so only the OS is missing."
+ },
+ {
+  "id": "R2",
+  "text": "How does syslog work and what is the log format?",
+  "expect_kind": "how_it_works",
+  "must_ask": [
+   "product"
+  ],
+  "must_not_ask": [
+   "recent_change",
+   "os",
+   "version",
+   "licence_tier",
+   "collection_method"
+  ],
+  "note": "REAL inquiry. A concept question: nothing to diagnose, nothing to ask."
+ },
+ {
+  "id": "R3",
+  "text": "My logs are not being collected. Why?",
+  "expect_kind": "log_not_received",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "collection_method",
+   "os",
+   "device_vendor",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "version",
+   "device_count"
+  ],
+  "note": "REAL inquiry. A genuine fault with nothing stated, so the questions are earned."
+ },
+ {
+  "id": "R4",
+  "text": "My PC is Windows Server 2025 and we have 1000 devices registered. How do I increase it to 1001?",
+  "expect_kind": "capacity_limit",
+  "must_ask": [
+   "product",
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "device_count",
+   "recent_change",
+   "os",
+   "version",
+   "collection_method"
+  ],
+  "note": "REAL inquiry. The count is stated and the limit is the licence, so the customer is asked nothing."
  }
 ]

@@ -240,3 +240,70 @@ history gets "repaired" by the next maintainer and the defect returns.
 - The classifier counts cues. Two problem types with equal cue counts are
   decided by file order, which is arbitrary. No case currently exercises that.
 - `facts_present` detects a fact being *mentioned*, not a fact being *correct*.
+
+## Step 6: triage is a fallback, not a gate
+
+The plan was to put triage in front of the pipeline so an incomplete inquiry
+never reached the knowledge base. Before wiring it in, `gate_effect.py` ran the
+30 evidence fixtures through triage alone, with no AWS calls, and asked how
+many the gate would stop and how many of those the fixtures say are answerable.
+
+| | |
+|---|---|
+| stopped before any cost | 28 / 30 |
+| of those, expected ANSWER | **10** |
+
+The gate would have discarded every answerable question in the set. The cause
+was a category error: triage's fact lists are **diagnosis prerequisites**, and
+the fixtures are **documentation questions** — answerable from an approved
+document given only the version. Eighteen of them were not even recognised, and
+the fallback was ready to ask the customer what had changed about an inquiry it
+could not classify.
+
+So triage runs only once the evidence has run out. An UNRESOLVED result now
+carries what the engineer should look up and what to ask, instead of a bare
+"no approved document for this version". The 30 fixtures still score 30/30 at
+51 model calls: the fallback costs nothing, because it runs locally and only
+after the search has already failed.
+
+A gate that saves cost by discarding answerable questions is not a saving. The
+measurement was cheap and it changed the design.
+
+## Step 7: four real inquiries, and what they broke
+
+Four inquiries from a working support inbox were run through the engine.
+**Three of the four were not recognised.** The nine problem types had been
+derived from documentation, and documentation describes faults; real customers
+also ask about procedures, concepts and limits.
+
+| real inquiry | what it is | the 9 types |
+|---|---|---|
+| upgrade from 2.4.0 to 2.9.1, any dependencies? | procedure | not recognised |
+| how does syslog work, what is the log format? | concept | not recognised |
+| my logs are not being collected, why? | fault | recognised |
+| 1000 devices registered, how do I get to 1001? | capacity | not recognised |
+
+On the last one the engine's advice was "ask the customer what changed and did
+it ever work". Nothing had changed. The limit had been reached.
+
+Three types were added — `upgrade_procedure`, `capacity_limit`, `how_it_works`
+— along with one new fact, `device_count`, and `recent_change` was removed from
+the unrecognised path: an engine that cannot classify an inquiry has no
+business sending the customer a question about it.
+
+| | engine | checklist |
+|---|---|---|
+| 30 cases passed | 30 / 30 | 5 / 30 |
+| customer questions | 30 | 71 |
+| missed the deciding fact | 0 / 30 | 8 / 30 |
+
+Two of the four real inquiries now put **no questions at all** to the customer:
+the concept question is answered from a specification page, and the capacity
+question is answered by the licence tier, which is not a clue towards the
+answer but the answer itself.
+
+The provenance of every type is recorded in `derived_from`. Nine say which
+article they came from; three say "real inquiry, 17 November 2026". That
+distinction matters: the first nine describe what the documentation covers, the
+last three describe what customers actually ask, and only the second kind can
+be found by looking at an inbox.
