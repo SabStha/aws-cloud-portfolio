@@ -1,0 +1,299 @@
+{
+  "dataset": "triage",
+  "cases": [
+    {
+      "id": "T-01",
+      "inquiry": "Logs stopped arriving this morning.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os",
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-02",
+      "inquiry": "DemoCollector 2.4.4 on Windows, agentless, Windows event logs. Logs stopped after the upgrade.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-03",
+      "inquiry": "Our logs are missing since yesterday. DemoCollector 2.4.4.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os"
+      ]
+    },
+    {
+      "id": "T-04",
+      "inquiry": "DemoReporter 1.8 on Linux is not collecting the firewall syslog any more. Nothing was changed.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method"
+      ]
+    },
+    {
+      "id": "T-05",
+      "inquiry": "No events are arriving from the network device. DemoCollector 2.4.4 on Linux, via syslog.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-06",
+      "inquiry": "DemoCollector stopped collecting. We reinstalled it last week.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os",
+        "version"
+      ]
+    },
+    {
+      "id": "T-07",
+      "inquiry": "401 unauthorized from the ingestion API.",
+      "expect_type": "auth_error",
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-08",
+      "inquiry": "Getting 403 on DemoCloud 3.1 since we rotated the token.",
+      "expect_type": "auth_error",
+      "expect_missing": []
+    },
+    {
+      "id": "T-09",
+      "inquiry": "Our api key stopped working. DemoCollector 2.4.4.",
+      "expect_type": "auth_error",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-10",
+      "inquiry": "認証エラーが発生します。DemoCollector 2.4.4、先週アップデートしました。",
+      "expect_type": "auth_error",
+      "expect_missing": []
+    },
+    {
+      "id": "T-11",
+      "inquiry": "The credential we were given does not authenticate. It never worked.",
+      "expect_type": "auth_error",
+      "expect_missing": [
+        "product",
+        "version"
+      ]
+    },
+    {
+      "id": "T-12",
+      "inquiry": "The dashboard colours look wrong.",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-13",
+      "inquiry": "How do I export a report to PDF?",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-14",
+      "inquiry": "DemoReporter 1.8 crashes when I open the settings screen. It worked before.",
+      "expect_type": null,
+      "expect_missing": []
+    },
+    {
+      "id": "T-15",
+      "inquiry": "Is there a REST endpoint for creating users?",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-16",
+      "inquiry": "We looked after this all afternoon and logs are still missing. DemoCollector 2.4.4 on Windows, agentless, event logs.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-17",
+      "inquiry": "Logs stop arriving after 17:00 every day. DemoCollector 2.4.4 on Linux, via syslog, event logs.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-18",
+      "inquiry": "Who do we contact after hours when collection fails? DemoCollector 2.4.4 on Windows, agentless, event logs.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-19",
+      "inquiry": "The ingestion API returns 401. DemoCollector 2.4.4, nothing changed recently.",
+      "expect_type": "auth_error",
+      "expect_missing": []
+    },
+    {
+      "id": "T-20",
+      "inquiry": "Logs stopped. We collect them through the ingestion API. DemoCollector 2.4.4 on Windows.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-21",
+      "inquiry": "DemoCollector v2.4.4 on Windows, agentless, event logs, stopped after a reboot.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-22",
+      "inquiry": "We are on DemoCollector 2.4 (not the latest). Logs missing.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os",
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-23",
+      "inquiry": "Running the latest DemoCollector. Logs stopped after the update.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os",
+        "version"
+      ]
+    },
+    {
+      "id": "T-24",
+      "inquiry": "ログが表示されません。DemoCollector 2.4.4、Windows、エージェントレス、イベントログです。変更はありません。",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-25",
+      "inquiry": "ログ収集が停止しました。",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "collection_method",
+        "log_source",
+        "os",
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-26",
+      "inquiry": "トークンが無効になりました。DemoCloud 3.1、以降ずっとエラーです。",
+      "expect_type": "auth_error",
+      "expect_missing": []
+    },
+    {
+      "id": "T-27",
+      "inquiry": "Our token expired and logs also stopped. DemoCollector 2.4.4 on Windows, agentless, event logs.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    },
+    {
+      "id": "T-28",
+      "inquiry": "Both DemoCollector and DemoReporter stopped collecting. Versions 2.4.4 and 1.8, Windows, agentless, event logs, after the upgrade.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-29",
+      "inquiry": "Please help urgently.",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-30",
+      "inquiry": "It is broken again.",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-31",
+      "inquiry": "Attaching the screenshot you asked for.",
+      "expect_type": null,
+      "expect_missing": [
+        "product",
+        "recent_change",
+        "version"
+      ]
+    },
+    {
+      "id": "T-32",
+      "inquiry": "DemoQuery 1.0.4 returns 403 for every search. We changed the permissions yesterday.",
+      "expect_type": "auth_error",
+      "expect_missing": []
+    },
+    {
+      "id": "T-33",
+      "inquiry": "DemoManager 2.0 on Linux, file collection of firewall logs, nothing collected since the migration.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-34",
+      "inquiry": "DemoCollector 2.4.4, Windows, agentless, event logs. This never worked, it is a new install.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": []
+    },
+    {
+      "id": "T-35",
+      "inquiry": "DemoCollector 2.4.4 on Windows collecting event logs. We are not using an agent.",
+      "expect_type": "log_collection_stopped",
+      "expect_missing": [
+        "recent_change"
+      ]
+    }
+  ]
+}

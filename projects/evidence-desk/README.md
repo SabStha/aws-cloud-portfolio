@@ -91,3 +91,40 @@ A question about a feature that doesn't exist scored the same as a correct match
 Without a filter, an AI model given these results did refuse the injected instruction, but it also described all three restricted documents to the user. Refusing is not the same as hiding: the filter has to remove documents before the model sees them.
 
 **Next:** in the Lambda step, a narrow yes/no relevance check per retrieved document, with the final decision still made by code, measured against the same 30 tests.
+
+## Step 3: triage, and whether it beats a form
+
+Before searching anything, decide whether the question can be answered at all. Each problem type carries its own list of required facts, so an authentication error is not asked about the collection method.
+
+The result is one of three, decided in code:
+
+| Outcome | Meaning |
+|---|---|
+| `COMPLETE` | Every fact the problem type needs is present; go and search |
+| `MISSING_INFORMATION` | Ask for the missing facts, in one reply, with a reason for each |
+| unrecognised problem | Still ask product, version and what changed |
+
+**The support knowledge is not in the code.** `problem_types.json` holds the problem types, the facts each needs, and why each fact changes the answer. `triage.py` only reads it. A support engineer can maintain the knowledge without touching Python, which is how this would have to work in a real deployment.
+
+### Measured against the boring alternative
+
+The honest question is whether a plain intake form does the same job. `baseline.py` is that form: the same six questions for every inquiry. Both were scored against 35 test inquiries with expected outcomes ([triage_cases.json](triage_cases.json), [evidence/triage-score.txt](evidence/triage-score.txt)):
+
+| | Right questions asked | Total questions |
+|---|---|---|
+| Triage | **34 / 35** | **62** |
+| Fixed checklist | 19 / 35 | 107 |
+
+42% fewer questions, and the right set almost twice as often. On a three-case sample the two had looked equal; the difference only appeared at 35.
+
+### Three bugs the test cases found
+
+1. **`collect` matched `DemoCollector`.** Every inquiry naming the product scored a point for "log collection problem", so a token error was filed as a log problem. Cues must now start a word: `collecting` still matches, a match inside `DemoCollector` does not.
+2. **`after` matched `afternoon`, `after hours` and `after 17:00`.** The engine believed it knew what had changed when the customer had said nothing of the kind. Three test cases were written specifically to catch this.
+3. **`stopped` and `missing` are not log words.** "Our api key stopped working" was classified as a log problem. The log cues are now specific.
+
+All three were invisible on the first three examples and obvious at 35. Detecting a fact wrongly is worse than asking for it, so the cue lists deliberately detect less.
+
+### Honest limits
+
+The fact lists are invented for the fictional DemoCollector corpus. Whether real documentation branches on those facts is unknown, and finding out is the documentation audit, not a thing to assume. Problem types are matched by keyword, which will not survive a real corpus unchanged.

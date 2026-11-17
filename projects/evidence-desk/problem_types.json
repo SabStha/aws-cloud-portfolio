@@ -1,0 +1,139 @@
+{
+  "_comment": "Support knowledge, not code. Tell Claude what to change in plain words; the engine reads this file.",
+  "problem_types": [
+    {
+      "key": "log_collection_stopped",
+      "label": "Log collection stopped",
+      "cues": [
+        "log",
+        "logs",
+        "event log",
+        "arriving",
+        "collecting",
+        "collection",
+        "collected",
+        "ログ",
+        "収集",
+        "表示されない"
+      ],
+      "facts": {
+        "product": "Each product has its own troubleshooting path.",
+        "version": "Supported versions differ, and menu paths changed between them.",
+        "os": "Windows and Linux fail for different reasons and are checked differently.",
+        "log_source": "An event log, a device syslog and M365 each break in their own way.",
+        "collection_method": "Agentless, syslog, API and file collection have separate procedures.",
+        "recent_change": "Collection that stopped after an upgrade or a config change is a different investigation from one that never started."
+      }
+    },
+    {
+      "key": "auth_error",
+      "label": "Authentication error from the ingestion API",
+      "cues": [
+        "401",
+        "403",
+        "unauthorized",
+        "token",
+        "api key",
+        "credential",
+        "authentication",
+        "認証",
+        "トークン"
+      ],
+      "facts": {
+        "product": "Each product issues and checks its tokens differently.",
+        "version": "The token permission model changed between supported versions, so the rotation steps differ.",
+        "recent_change": "An error that started after a change points at the change; one that never worked points at setup."
+      }
+    }
+  ],
+  "fact_cues": {
+    "product": [
+      "democollector",
+      "demoreporter",
+      "demoquery",
+      "democloud",
+      "demomanager"
+    ],
+    "os": [
+      "windows",
+      "linux",
+      "ubuntu",
+      "centos",
+      "rhel",
+      "red hat"
+    ],
+    "log_source": [
+      "event log",
+      "eventlog",
+      "syslog",
+      "firewall",
+      "m365",
+      "office 365",
+      "network device",
+      "イベントログ"
+    ],
+    "collection_method": [
+      "agentless",
+      "agent",
+      "via syslog",
+      "wmi",
+      "file collection",
+      "エージェント",
+      "収集方式"
+    ],
+    "recent_change": [
+      "upgrade",
+      "updated",
+      "update",
+      "changed",
+      "change",
+      "rotated",
+      "reinstalled",
+      "migrated",
+      "migration",
+      "never worked",
+      "worked before",
+      "new install",
+      "nothing was changed",
+      "nothing changed",
+      "reboot",
+      "アップデート",
+      "変更",
+      "以降",
+      "移行"
+    ]
+  },
+  "questions": {
+    "product": [
+      "Which product is affected?",
+      "対象の製品をご教示ください。"
+    ],
+    "version": [
+      "Which version is installed?",
+      "ご利用中のバージョンをご教示ください。"
+    ],
+    "os": [
+      "Which OS is it running on?",
+      "稼働中の OS をご教示ください。"
+    ],
+    "log_source": [
+      "What is being collected: Windows event log, device syslog, M365?",
+      "収集対象のログ種別をご教示ください。"
+    ],
+    "collection_method": [
+      "How is it collected: agentless, syslog, API or file?",
+      "収集方式をご教示ください。"
+    ],
+    "recent_change": [
+      "Did this work before, and did anything change just before it stopped?",
+      "以前は正常に動作していましたか。停止直前に変更した点はございますか。"
+    ]
+  },
+  "_provisional": "Fact lists are invented for the fictional DemoCollector corpus. Check them against real documentation in Goal 3.",
+  "_aliases": "Fictional names only. DemoCollector, DemoReporter, DemoQuery, DemoCloud, DemoManager. No real product or company name appears in this project.",
+  "unknown_fallback": {
+    "product": "Needed for any problem, whatever it turns out to be.",
+    "version": "Needed for any problem, whatever it turns out to be.",
+    "recent_change": "Narrows almost every investigation before it starts."
+  }
+}
