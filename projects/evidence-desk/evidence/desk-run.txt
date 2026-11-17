@@ -1,0 +1,45 @@
+
+----------------------------------------------------------------------------
+Customer wants Teams notifications. DemoCollector Pro.
+  ANSWERED  (capability table, nothing searched)
+    NOT_AVAILABLE
+    Alert notification to Teams, Slack or Chatwork does not exist for DemoCollector on any licence.
+    available on: DemoReporter Monitor, DemoQuery Monitor
+
+----------------------------------------------------------------------------
+Can we do syslog collection on DemoCollector Limited-Monitor?
+  ANSWERED  (capability table, nothing searched)
+    NOT_IN_THIS_TIER
+    Syslog collection (UDP/TCP/TLS) is not included in DemoCollector Limited-Monitor. It needs one of: Free, Limited-Log, Pro.
+    available on: DemoCollector Free, DemoCollector Limited-Log, DemoCollector Pro
+
+----------------------------------------------------------------------------
+Customer is asking for generative AI analysis. DemoQuery Log licence.
+  ANSWERED  (capability table, nothing searched)
+    AVAILABLE
+    Included in this licence.
+
+----------------------------------------------------------------------------
+They want capacity forecasting on DemoCollector Pro.
+  ANSWERED  (capability table, nothing searched)
+    NOT_AVAILABLE
+    Capacity forecasting does not exist for DemoCollector on any licence.
+    available on: DemoReporter Monitor, DemoQuery Monitor
+
+----------------------------------------------------------------------------
+Customer wants port monitoring. DemoCollector Free.
+  ANSWERED  (capability table, nothing searched)
+    NOT_IN_THIS_TIER
+    Port status monitoring is not included in DemoCollector Free. It needs one of: Limited-Monitor, Pro.
+    available on: DemoCollector Limited-Monitor, DemoCollector Pro
+
+----------------------------------------------------------------------------
+After yesterday's update our logs stopped arriving. DemoCollector 2.4.4.
+  BLOCKED  Logs are not arriving
+    CHECK YOURSELF: licence tier
+    ASK THE CUSTOMER: collection method, operating system, device vendor and model [only if the logs come by syslog or SNMP from a network device]
+
+----------------------------------------------------------------------------
+DemoCollector 2.4.4 on Windows Server 2022, Pro licence, WMI collection of event logs. Stopped after the upgrade.
+  READY  Logs are not arriving
+    every fact this problem needs is on the ticket; retrieval can run

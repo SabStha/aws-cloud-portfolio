@@ -1,49 +1,215 @@
 {
-  "_comment": "Support knowledge, not code. Tell Claude what to change in plain words; the engine reads this file.",
+  "_comment": "Support knowledge, not code. Derived from the structure of a real public corpus, with fictional product names. Tell Claude what to change in plain words.",
+  "_derivation": "Problem types come from the real troubleshooting article inventory. Required facts come from the branch points inside those articles and from documented OS and licence prerequisites.",
   "problem_types": [
     {
-      "key": "log_collection_stopped",
-      "label": "Log collection stopped",
+      "key": "ui_unreachable",
+      "label": "Login screen does not appear",
+      "cues": [
+        "login screen",
+        "login page",
+        "web screen",
+        "cannot access",
+        "does not open",
+        "browser",
+        "管理画面",
+        "ログイン画面",
+        "表示されない"
+      ],
+      "facts": {
+        "product": "Each product serves its interface differently.",
+        "os": "The service check differs: a Windows service versus a Linux process.",
+        "ssl_enabled": "With SSL on, the address is https on a different port; with it off, plain http. Giving the wrong one looks like an outage.",
+        "port_changed": "A changed web port must be appended to the address, or the page never loads."
+      },
+      "derived_from": "ref-190906_02, whose own steps branch on exactly these two settings"
+    },
+    {
+      "key": "service_wont_start",
+      "label": "Service will not start",
+      "cues": [
+        "will not start",
+        "won't start",
+        "does not start",
+        "service",
+        "daemon",
+        "起動しない",
+        "サービス"
+      ],
+      "facts": {
+        "product": "Different products, different start mechanism.",
+        "version": "The Java requirement changed between versions, and a mismatched JDK stops startup.",
+        "os": "Windows runs it as a service; Linux as a process from a shell script.",
+        "recent_change": "A failure after an upgrade points at the upgrade; one on a new install points at setup."
+      },
+      "derived_from": "ref-190906_01 (Windows), the JDK change in v1.8.0, and the verified-JDK article"
+    },
+    {
+      "key": "service_wont_stop",
+      "label": "Service will not stop, or a process remains",
+      "cues": [
+        "will not stop",
+        "won't stop",
+        "still running",
+        "process remains",
+        "kill",
+        "停止しない",
+        "プロセスが残る"
+      ],
+      "facts": {
+        "os": "The stop path is a script on Linux and a service on Windows.",
+        "recent_change": "A firewall rule added for an unrelated fix is a known cause of this."
+      },
+      "derived_from": "lsc_systemstopped (firewalld direct rule) and snp-190206_01 (stop/start sequencing)"
+    },
+    {
+      "key": "log_not_received",
+      "label": "Logs are not arriving",
       "cues": [
         "log",
         "logs",
-        "event log",
-        "arriving",
+        "not arriving",
+        "not received",
         "collecting",
         "collection",
         "collected",
         "ログ",
         "収集",
-        "表示されない"
+        "受信できない"
       ],
       "facts": {
-        "product": "Each product has its own troubleshooting path.",
-        "version": "Supported versions differ, and menu paths changed between them.",
-        "os": "Windows and Linux fail for different reasons and are checked differently.",
-        "log_source": "An event log, a device syslog and M365 each break in their own way.",
-        "collection_method": "Agentless, syslog, API and file collection have separate procedures.",
-        "recent_change": "Collection that stopped after an upgrade or a config change is a different investigation from one that never started."
-      }
+        "product": "Log collection is not in every product or tier.",
+        "licence_tier": "Syslog and WMI collection are absent from some paid tiers. Check the licence before troubleshooting.",
+        "collection_method": "Syslog, WMI, FTP, SCP and REST API each have their own article and their own failure modes.",
+        "os": "Linux syslog collection needs root; Linux WMI collection needs the wmi package.",
+        "device_vendor": {
+          "why": "Some devices have their own article for why their logs do not arrive.",
+          "depends_on": {
+            "fact": "collection_method",
+            "values": [
+              "syslog",
+              "snmp"
+            ],
+            "prefix": "If the logs come by syslog or SNMP from a network device: ",
+            "only_when": "the logs come by syslog or SNMP from a network device"
+          }
+        },
+        "recent_change": "Collection that stopped after an upgrade is a different investigation from one that never started."
+      },
+      "derived_from": "ref-230608_01, ref-191031_02, the nine per-method collection articles, and the OS prerequisites on the spec page"
     },
     {
-      "key": "auth_error",
-      "label": "Authentication error from the ingestion API",
+      "key": "monitoring_no_data",
+      "label": "Monitoring returns no data",
       "cues": [
-        "401",
-        "403",
-        "unauthorized",
-        "token",
-        "api key",
-        "credential",
-        "authentication",
-        "認証",
-        "トークン"
+        "no data",
+        "not retrieved",
+        "cannot get",
+        "snmp",
+        "ping",
+        "monitoring",
+        "監視",
+        "取得できない",
+        "取得失敗"
       ],
       "facts": {
-        "product": "Each product issues and checks its tokens differently.",
-        "version": "The token permission model changed between supported versions, so the rotation steps differ.",
-        "recent_change": "An error that started after a change points at the change; one that never worked points at setup."
-      }
+        "product": "Monitoring is not in every product or tier.",
+        "licence_tier": "Port monitoring is paid-only; some monitoring is absent from log-only tiers.",
+        "version": "The 'acquisition failed' status was replaced by caution and warning in v2.4.4, so older guidance describes a status that no longer exists.",
+        "device_vendor": "Vendor-specific articles exist for the common firewalls.",
+        "snmp_version": {
+          "why": "SNMP v1 is not enough for the item scan; v2 or above is required.",
+          "depends_on": {
+            "fact": "device_vendor",
+            "values": [],
+            "prefix": "If the target is monitored by SNMP: ",
+            "only_when": "the target is monitored by SNMP"
+          }
+        }
+      },
+      "derived_from": "ref-191031_01, snp-191119_01, ref-200825_01 (paid only), and the v2.4.4 status change"
+    },
+    {
+      "key": "scan_empty",
+      "label": "Monitoring item scan finds nothing",
+      "cues": [
+        "scan",
+        "no items",
+        "item scan",
+        "nothing found",
+        "監視項目",
+        "スキャン"
+      ],
+      "facts": {
+        "snmp_version": "The scan needs SNMP v2 or above on the target.",
+        "device_vendor": "Community string and MIB support vary by device."
+      },
+      "derived_from": "snp-191119_01, whose checklist is exactly these"
+    },
+    {
+      "key": "disk_full",
+      "label": "Disk space exhausted on the collector host",
+      "cues": [
+        "disk",
+        "space",
+        "full",
+        "storage",
+        "no space",
+        "容量",
+        "ディスク"
+      ],
+      "facts": {
+        "os": "The cleanup procedure has separate Windows and Linux articles.",
+        "version": "Moving the log directory was impossible before v2.0.0, so the answer depends on the version.",
+        "licence_tier": "Free-tier retention is fixed at 10 days, which changes what can be freed."
+      },
+      "derived_from": "ref-190725_01 and _02 (the OS pair), snp-191031_03 (the v2.0.0 boundary)"
+    },
+    {
+      "key": "licence_problem",
+      "label": "Licence registration or expiry",
+      "cues": [
+        "licence",
+        "license",
+        "registration failed",
+        "expired",
+        "key file",
+        "ライセンス",
+        "登録できない"
+      ],
+      "facts": {
+        "product": "The licence model differs per product: per server, per device, or per user.",
+        "licence_tier": "What is restricted depends on the tier."
+      },
+      "derived_from": "ref-230628_01, ref-200520_01, FAQ licensing section"
+    },
+    {
+      "key": "feature_question",
+      "label": "Is this feature available to me?",
+      "cues": [
+        "can i",
+        "is it possible",
+        "does it support",
+        "available",
+        "feature",
+        "対応していますか",
+        "できますか",
+        "wants",
+        "want",
+        "would like",
+        "asking for",
+        "requesting",
+        "need",
+        "requirement",
+        "希望",
+        "要望",
+        "したい"
+      ],
+      "facts": {
+        "product": "Availability is per product.",
+        "licence_tier": "Availability is per licence tier. Most of these are answerable from the capability table with no search at all."
+      },
+      "derived_from": "the feature matrices on the spec page and in the brochures"
     }
   ],
   "fact_cues": {
@@ -60,26 +226,63 @@
       "ubuntu",
       "centos",
       "rhel",
+      "alma",
       "red hat"
     ],
-    "log_source": [
-      "event log",
-      "eventlog",
-      "syslog",
-      "firewall",
-      "m365",
-      "office 365",
-      "network device",
-      "イベントログ"
+    "licence_tier": [
+      "free",
+      "limited",
+      "pro",
+      "monitor licence",
+      "log licence",
+      "無償",
+      "有償"
     ],
     "collection_method": [
-      "agentless",
-      "agent",
-      "via syslog",
+      "syslog",
       "wmi",
-      "file collection",
-      "エージェント",
+      "ftp",
+      "scp",
+      "http",
+      "copy",
+      "move",
+      "rest api",
+      "cloudwatch",
+      "netflow",
       "収集方式"
+    ],
+    "device_vendor": [
+      "fortigate",
+      "fortinet",
+      "palo alto",
+      "paloalto",
+      "cisco",
+      "yamaha",
+      "sonicwall",
+      "watchguard",
+      "f5",
+      "a10"
+    ],
+    "snmp_version": [
+      "snmpv1",
+      "snmpv2",
+      "snmpv3",
+      "snmp v1",
+      "snmp v2",
+      "snmp v3"
+    ],
+    "ssl_enabled": [
+      "https",
+      "ssl",
+      "tls enabled",
+      "ssl_enable"
+    ],
+    "port_changed": [
+      "port changed",
+      "changed the port",
+      "custom port",
+      "8443",
+      "ポート変更"
     ],
     "recent_change": [
       "upgrade",
@@ -109,31 +312,103 @@
       "対象の製品をご教示ください。"
     ],
     "version": [
-      "Which version is installed?",
-      "ご利用中のバージョンをご教示ください。"
+      "Which version and build is installed?",
+      "ご利用中のバージョンとビルド番号をご教示ください。"
     ],
     "os": [
       "Which OS is it running on?",
       "稼働中の OS をご教示ください。"
     ],
-    "log_source": [
-      "What is being collected: Windows event log, device syslog, M365?",
-      "収集対象のログ種別をご教示ください。"
+    "licence_tier": [
+      "Which licence is this environment on?",
+      "ご利用中のライセンス種別をご教示ください。"
     ],
     "collection_method": [
-      "How is it collected: agentless, syslog, API or file?",
-      "収集方式をご教示ください。"
+      "How are the logs collected: syslog, WMI, FTP, SCP, REST API?",
+      "ログの収集方式をご教示ください。"
+    ],
+    "device_vendor": [
+      "Which device or vendor is being monitored?",
+      "監視対象の機器・ベンダーをご教示ください。"
+    ],
+    "snmp_version": [
+      "Which SNMP version is enabled on the target?",
+      "監視対象で有効な SNMP バージョンをご教示ください。"
+    ],
+    "ssl_enabled": [
+      "Is SSL/HTTPS enabled on the collector?",
+      "コレクターで SSL(HTTPS) を有効にされていますか。"
+    ],
+    "port_changed": [
+      "Has the web access port been changed from the default?",
+      "Web アクセスポートを既定値から変更されていますか。"
     ],
     "recent_change": [
       "Did this work before, and did anything change just before it stopped?",
       "以前は正常に動作していましたか。停止直前に変更した点はございますか。"
     ]
   },
-  "_provisional": "Fact lists are invented for the fictional DemoCollector corpus. Check them against real documentation in Goal 3.",
-  "_aliases": "Fictional names only. DemoCollector, DemoReporter, DemoQuery, DemoCloud, DemoManager. No real product or company name appears in this project.",
   "unknown_fallback": {
     "product": "Needed for any problem, whatever it turns out to be.",
     "version": "Needed for any problem, whatever it turns out to be.",
     "recent_change": "Narrows almost every investigation before it starts."
-  }
+  },
+  "evidence_rules": [
+    {
+      "rule": "exclude_merged_stubs",
+      "what": "A document whose body is only a pointer to another article carries no evidence. Follow the pointer or discard it.",
+      "why": "12 of 18 specification articles in the real corpus are stubs of exactly this kind, and they remain indexed."
+    },
+    {
+      "rule": "no_upper_bound_means_unknown",
+      "what": "A document stating only a lower bound ('from v1.7.0') is not evidence that it still applies to the current version. Treat its applicability as open, not as current.",
+      "why": "No article in the real corpus states an upper bound, so 'it does not say it stopped applying' carries no information."
+    },
+    {
+      "rule": "prefer_the_correction",
+      "what": "Where a newer document or release note contradicts an older claim, the claim is superseded even when the older document is still published.",
+      "why": "Two specification articles are actively false for current versions and say so only in an appended note."
+    },
+    {
+      "rule": "missing_os_label_is_unknown",
+      "what": "A document with no OS label does not apply to both. Its applicability is unknown and must be established another way.",
+      "why": "46 of 105 reference articles state neither a version nor an OS."
+    },
+    {
+      "rule": "age_signal_is_unreliable",
+      "what": "Do not use the published age banner as a staleness signal. Use the release history instead: a document is suspect when a release after its last update changed what it describes.",
+      "why": "The banner says it counts from the posting date but is computed from the last update, and understates age by years."
+    },
+    {
+      "rule": "capability_before_search",
+      "what": "If the capability table can answer whether a feature exists for this product and licence, answer from it and do not search.",
+      "why": "Deterministic and always correct, where retrieval is neither."
+    }
+  ],
+  "_conditional": "A fact may depend on another. When the fact it depends on is unknown, its question is asked with a conditional prefix so the customer still answers in one reply. When that fact is known and does not match, the question is dropped entirely.",
+  "fact_labels": {
+    "product": "product",
+    "version": "version and build",
+    "os": "operating system",
+    "licence_tier": "licence tier",
+    "collection_method": "collection method",
+    "device_vendor": "device vendor and model",
+    "snmp_version": "SNMP version on the target",
+    "ssl_enabled": "SSL/HTTPS enabled?",
+    "port_changed": "web port changed from default?",
+    "recent_change": "what changed, and did it ever work"
+  },
+  "fact_sources": {
+    "product": "internal",
+    "version": "internal",
+    "licence_tier": "internal",
+    "os": "customer",
+    "collection_method": "customer",
+    "device_vendor": "customer",
+    "snmp_version": "customer",
+    "ssl_enabled": "customer",
+    "port_changed": "customer",
+    "recent_change": "customer"
+  },
+  "_output_audience": "The engine's output is for the support engineer, not the customer. Facts are split into what the engineer can look up internally and what only the customer can answer. Customer-facing wording is a separate, later concern."
 }

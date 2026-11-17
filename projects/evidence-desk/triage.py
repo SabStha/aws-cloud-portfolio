@@ -1,6 +1,7 @@
-"""Triage: what kind of problem is this, and do we have the facts to answer it?
+"""Triage: what kind of problem is this, and what does the engineer still need to know?
 
 Runs before any search. No AWS, no model: rules only.
+Output is for the engineer at their desk, not for the customer.
 The support knowledge lives in problem_types.json, not here.
 """
 import json
@@ -11,7 +12,8 @@ HERE = pathlib.Path(__file__).parent
 RULES = json.loads((HERE / "problem_types.json").read_text(encoding="utf-8"))
 TYPES = {t["key"]: t for t in RULES["problem_types"]}
 FACT_CUES = RULES["fact_cues"]
-QUESTIONS = RULES["questions"]
+LABELS = RULES["fact_labels"]
+SOURCES = RULES["fact_sources"]
 VERSION_RE = re.compile(r"\b\d+\.\d+(\.\d+)?\b")
 
 
@@ -31,7 +33,7 @@ def classify(text):
 
 
 def facts_present(text):
-    """Return the set of facts the customer has already given."""
+    """Return the set of facts the inquiry already states."""
     low = text.lower()
     found = {f for f, cues in FACT_CUES.items() if any(_hit(c, low) for c in cues)}
     if VERSION_RE.search(text):
@@ -39,35 +41,60 @@ def facts_present(text):
     return found
 
 
+def _why(entry):
+    return entry["why"] if isinstance(entry, dict) else entry
+
+
 def triage(text):
-    """Return (problem type, required facts, missing facts, questions to ask)."""
+    """Return (problem type, known facts, and the gaps the engineer must close)."""
     kind = classify(text)
-    # Unrecognised problem: still ask the facts every investigation needs.
     needed = TYPES[kind]["facts"] if kind else RULES.get("unknown_fallback", {})
     have = facts_present(text)
-    missing = [f for f in needed if f not in have]
-    asks = [(QUESTIONS[f][0], QUESTIONS[f][1], needed[f]) for f in missing]
-    return kind, list(needed), missing, asks
+
+    gaps = []
+    for f, entry in needed.items():
+        if f in have:
+            continue
+        condition = ""
+        if isinstance(entry, dict) and "depends_on" in entry:
+            dep = entry["depends_on"]
+            if dep["fact"] in have:
+                continue                       # we know what it depends on, so this is settled
+            condition = dep["only_when"]       # unknown, so flag it as conditional
+        gaps.append({"fact": f, "label": LABELS.get(f, f), "why": _why(entry),
+                     "source": SOURCES.get(f, "customer"), "only_when": condition})
+    return kind, sorted(have & set(needed)), gaps
 
 
 def report(text):
-    kind, needed, missing, asks = triage(text)
-    print("\n" + text)
-    print(f"  type     : {TYPES[kind]['label'] if kind else 'UNKNOWN — no problem type matched, asking the basics'}")
-    print(f"  needs    : {', '.join(needed) or '-'}")
-    print(f"  missing  : {', '.join(missing) or 'nothing'}")
-    print(f"  verdict  : {'MISSING_INFORMATION' if missing else 'COMPLETE'}")
-    for en, ja, why in asks:
-        print(f"    - {en}\n      {ja}\n      why: {why}")
+    kind, known, gaps = triage(text)
+    print("\n" + "-" * 76)
+    print(text)
+    print(f"  problem   {TYPES[kind]['label'] if kind else 'not recognised, falling back to the basics'}")
+    print(f"  known     {', '.join(known) if known else 'nothing stated'}")
+    if not gaps:
+        print("  status    READY — every fact this problem needs is on the ticket")
+        return
+    print(f"  status    BLOCKED on {len(gaps)} fact{'s' if len(gaps) > 1 else ''}")
+    for bucket, title in (("internal", "CHECK YOURSELF"), ("customer", "ASK THE CUSTOMER")):
+        rows = [g for g in gaps if g["source"] == bucket]
+        if not rows:
+            continue
+        print(f"\n  {title}")
+        for g in rows:
+            cond = f"   [only if {g['only_when']}]" if g["only_when"] else ""
+            print(f"    {g['label']}{cond}")
+            print(f"      {g['why']}")
 
 
 if __name__ == "__main__":
-    print(f"{len(TYPES)} problem types loaded from problem_types.json")
+    print(f"{len(TYPES)} problem types loaded")
     for c in [
         "After yesterday's update our logs stopped arriving. DemoCollector 2.4.4.",
-        "DemoCollector 2.4.4 on Windows, agentless collection of Windows event logs. "
-        "Logs stopped after I enabled a new input.",
-        "Getting 401 unauthorized from the ingestion API on DemoCollector 2.4.4.",
+        "DemoCollector 2.4.4 on Windows Server 2022, Pro licence, WMI collection of event logs. "
+        "Stopped after the upgrade.",
+        "The login screen does not appear after installing DemoCollector 2.4.4 on Windows Server 2022.",
+        "Customer wants Teams notifications. DemoCollector Pro.",
         "The dashboard colours look wrong.",
     ]:
         report(c)

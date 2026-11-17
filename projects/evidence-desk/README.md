@@ -128,3 +128,61 @@ All three were invisible on the first three examples and obvious at 35. Detectin
 ### Honest limits
 
 The fact lists are invented for the fictional DemoCollector corpus. Whether real documentation branches on those facts is unknown, and finding out is the documentation audit, not a thing to assume. Problem types are matched by keyword, which will not survive a real corpus unchanged.
+
+## Step 4: rules derived from a real corpus, not invented
+
+The first version of the triage rules was my own guess at which facts matter. Checking them against the synthetic corpus showed why that was worthless: three of the four facts the engine asked about were things **no document distinguished**. Asking a customer for them would have wasted their time and changed no answer.
+
+So the rules were rebuilt from the structure of a real vendor's public knowledge base — a versioned on-premises product with Windows and Linux builds, several licence tiers, and about 300 public technical articles. Nothing behind a login was used, and no real content appears here; only the shape.
+
+### What the real corpus looks like
+
+| Observation | Count |
+|---|---|
+| Reference articles indexed | 105 |
+| Articles stating neither version nor OS | 46 |
+| Articles stating an **upper** version bound | **0** |
+| Specification articles that are empty stubs pointing elsewhere | 12 of 18 |
+| Releases spanning the corpus | 32 |
+
+Three findings drive the design:
+
+1. **No upper bounds exist.** Every version note is "from v1.7.0 onward". Nothing says a procedure stopped applying, so a 2019 article and a 2026 article look equally current to any search.
+2. **Some articles are now false and still read as current.** One says a setting cannot be changed; a release three years later added it. The correction is a footnote.
+3. **The published staleness signal is wrong.** An age banner claims to count from the posting date but is computed from the last edit, understating age by years.
+
+These became explicit evidence rules in `problem_types.json`: exclude empty stubs, treat a lower bound as proving nothing, prefer a correction over the claim it corrects, treat a missing OS label as unknown rather than universal, and ignore the published age signal in favour of the release history.
+
+### The capability table: answers that need no search
+
+Some questions are a lookup, not an investigation. A feature matrix of product × licence tier answers three classes deterministically, with no retrieval and no model:
+
+| Inquiry | Outcome |
+|---|---|
+| Teams notifications on the on-premises collector | Does not exist on any tier |
+| Syslog collection on a monitoring-only licence | Not in this tier; names the tiers that have it |
+| Log search on an unsupported OS | That product has no build for that OS |
+
+Quota limits work the same way: a free-tier customer whose logs vanish after ten days has hit the retention limit, not a fault.
+
+### Output is for the engineer
+
+Given an inquiry, `desk.py` returns one of three things:
+
+| Outcome | Meaning |
+|---|---|
+| `ANSWERED` | The capability table settled it. Nothing searched. |
+| `READY` | Every fact this problem needs is on the ticket; retrieval can run. |
+| `BLOCKED` | Names the missing facts, split into what the engineer can look up internally and what only the customer can answer. |
+
+No customer-facing drafting. That is deliberately out of scope.
+
+### A lesson worth keeping
+
+An inquiry reading "generative AI analysis, Log licence" was classified as a log-collection fault, because the word "Log" sits inside a licence tier name. The fix was not better keywords but precedence: a phrase like "can we" or "is it possible" makes an inquiry a capability question whatever topic words surround it.
+
+That is the same shape of bug as a product name containing the word `collect`. Sentence structure beats vocabulary.
+
+### Honest limits
+
+Problem types are still matched by keyword, which will not survive a large corpus unchanged. The split between facts an engineer can look up internally and facts only a customer can answer is my assumption and has not been checked against a real support workflow. The capability table is hand-built from public specification pages and would need to be generated from an authoritative source for real use.
