@@ -66,7 +66,6 @@
       "key": "log_not_received",
       "label": "Logs are not arriving",
       "cues": [
-        "log",
         "logs",
         "not arriving",
         "not received",
@@ -75,7 +74,10 @@
         "collected",
         "ログ",
         "収集",
-        "受信できない"
+        "受信できない",
+        "log file",
+        "log data",
+        "log transfer"
       ],
       "facts": {
         "product": "Log collection is not in every product or tier.",
@@ -119,12 +121,11 @@
         "device_vendor": "Vendor-specific articles exist for the common firewalls.",
         "snmp_version": {
           "why": "SNMP v1 is not enough for the item scan; v2 or above is required.",
-          "depends_on": {
-            "fact": "device_vendor",
-            "values": [],
-            "prefix": "If the target is monitored by SNMP: ",
-            "only_when": "the target is monitored by SNMP"
-          }
+          "only_if_text": [
+            "snmp",
+            "監視項目",
+            "スキャン"
+          ]
         }
       },
       "derived_from": "ref-191031_01, snp-191119_01, ref-200825_01 (paid only), and the v2.4.4 status change"
@@ -410,5 +411,23 @@
     "port_changed": "customer",
     "recent_change": "customer"
   },
-  "_output_audience": "The engine's output is for the support engineer, not the customer. Facts are split into what the engineer can look up internally and what only the customer can answer. Customer-facing wording is a separate, later concern."
+  "_output_audience": "The engine's output is for the support engineer, not the customer. Facts are split into what the engineer can look up internally and what only the customer can answer. Customer-facing wording is a separate, later concern.",
+  "_cue_decisions": [
+    {
+      "cue": "log",
+      "action": "removed from log_not_received",
+      "reason": "the licence name Limited-Log contains it, so a capability question about licences was classified as a log fault and three irrelevant questions were put to the customer (test case T1)",
+      "replaced_with": [
+        "log file",
+        "log data",
+        "log transfer"
+      ],
+      "kept": "the Japanese cue ログ, which does not collide"
+    },
+    {
+      "fact": "snmp_version in monitoring_no_data",
+      "action": "depends_on device_vendor replaced with only_if_text",
+      "reason": "the dependency said skip this when the vendor is known, but the intent was ask this only when SNMP is in play. On a real SNMP fault with a known vendor it stayed silent about the one fact that decides the case (test case K1)."
+    }
+  ]
 }

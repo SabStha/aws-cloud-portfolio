@@ -55,6 +55,9 @@ def triage(text):
     for f, entry in needed.items():
         if f in have:
             continue
+        if isinstance(entry, dict) and "only_if_text" in entry:
+            if not any(_hit(cue, text.lower()) for cue in entry["only_if_text"]):
+                continue                       # nothing in the text puts this fact in play
         condition = ""
         if isinstance(entry, dict) and "depends_on" in entry:
             dep = entry["depends_on"]
