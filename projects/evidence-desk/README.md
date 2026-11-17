@@ -186,3 +186,57 @@ That is the same shape of bug as a product name containing the word `collect`. S
 ### Honest limits
 
 Problem types are still matched by keyword, which will not survive a large corpus unchanged. The split between facts an engineer can look up internally and facts only a customer can answer is my assumption and has not been checked against a real support workflow. The capability table is hand-built from public specification pages and would need to be generated from an authoritative source for real use.
+
+## Step 5: the same 26 cases, two engines
+
+Both engines use the same classifier. The only thing that differs is which
+questions they put to the customer, so any difference below is caused by the
+question policy and nothing else.
+
+|                                      | rules engine | fixed checklist |
+|--------------------------------------|--------------|-----------------|
+| cases passed                         | 26 / 26      | 5 / 26          |
+| questions put to the customer        | 26           | 62              |
+| per inquiry                          | 1.0          | 2.4             |
+| cases missing the deciding fact      | 0 / 26       | 7 / 26          |
+
+A case passes only if the problem type is recognised, every required fact is
+asked for, and **nothing else is**. That last condition is the one that fails
+21 times for the checklist.
+
+The result is not a trade-off. The checklist asks more than twice as many
+questions and still misses the fact that settles the case in 7 of 26:
+
+- the login page cannot be reached, and it never asks whether SSL is enabled
+  or whether the web port was changed — the two settings the documented
+  procedure branches on
+- the item scan comes back empty, and it never asks the SNMP version, though
+  v1 is not sufficient for a scan and v2 or above is required
+
+A fixed list cannot hold a fact that only matters sometimes. Adding those four
+facts to the checklist would make every inquiry ten questions long.
+
+### Three defects the cases found
+
+1. The cue `log` matched inside the licence name *Limited-Log*, so a question
+   about licence capability was investigated as a log fault. Fixed by removing
+   the cue; the Japanese cue does not collide and was kept.
+2. `snmp_version` was skipped whenever the vendor was known. The rule meant
+   "ask only when SNMP is in play" but said "skip when the vendor is known",
+   so on a real SNMP fault with a known vendor it stayed silent about the
+   deciding fact. Fixed by making the condition read the inquiry text.
+3. One test case was wrong, not the code: it demanded the SNMP version on a
+   ping problem. Corrected in the case file, with the reason recorded.
+
+Every cue and rule removal is recorded in `_cue_decisions` in
+`problem_types.json`, with the case that exposed it. A cue list without that
+history gets "repaired" by the next maintainer and the defect returns.
+
+### Honest limits
+
+- 26 cases written by one person who has read the public documentation, not
+  the product. They encode what the corpus says, which is not the same as what
+  is true.
+- The classifier counts cues. Two problem types with equal cue counts are
+  decided by file order, which is arbitrary. No case currently exercises that.
+- `facts_present` detects a fact being *mentioned*, not a fact being *correct*.

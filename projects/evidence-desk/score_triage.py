@@ -9,7 +9,10 @@ Rule 3 is the one that matters: a short first reply is a feature.
 import json
 import pathlib
 
-import triage as tri
+import importlib
+import sys
+
+tri = importlib.import_module(sys.argv[1] if len(sys.argv) > 1 else "triage")
 
 HERE = pathlib.Path(__file__).parent
 CASES = json.loads((HERE / "triage_cases.json").read_text(encoding="utf-8"))
@@ -47,6 +50,7 @@ def run():
             print("        TRAP: " + c["trap"])
         print()
 
+    print("ENGINE: " + tri.__name__)
     print("SCORE: " + str(passed) + "/" + str(len(CASES)))
     print("Questions put to the customer across all " + str(len(CASES)) +
           " inquiries: " + str(customer_total) +

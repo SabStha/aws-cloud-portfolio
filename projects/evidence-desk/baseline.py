@@ -1,27 +1,31 @@
-"""Baseline: the boring alternative. A fixed intake checklist, the same for every inquiry.
+"""baseline.py — the same job, done the way it is done today: a fixed checklist.
 
-If this does nearly as well as triage.py, the problem types are not worth their cost.
-That is a real possible outcome, and finding it out is the point.
+Every inquiry gets the same six questions, whatever it happens to say.
+
+This is not a strawman. It is what a careful engineer writes when there is no
+rulebook: the six things that turn out to be needed often enough that asking
+for them up front feels safer than guessing. It uses the SAME classifier as
+triage.py, so the only difference being measured is which questions get asked.
 """
-from triage import FACT_CUES, QUESTIONS, VERSION_RE, facts_present
+from triage import LABELS, SOURCES, classify, facts_present
 
-# One list for everything, like a form a customer fills in before opening a ticket.
-ALWAYS_ASK = ["product", "version", "os", "log_source", "collection_method", "recent_change"]
+CHECKLIST = ["product", "version", "os", "licence_tier", "collection_method", "recent_change"]
+
+WHY = "on the standard checklist, asked on every inquiry"
 
 
 def triage(text):
-    """Same shape as triage.triage, so the two can be scored against each other."""
+    """Same signature as triage.triage, so one scorer can measure both."""
     have = facts_present(text)
-    missing = [f for f in ALWAYS_ASK if f not in have]
-    asks = [(QUESTIONS[f][0], QUESTIONS[f][1], "always asked") for f in missing]
-    return "fixed_checklist", list(ALWAYS_ASK), missing, asks
+    gaps = [{"fact": f, "label": LABELS.get(f, f), "why": WHY,
+             "source": SOURCES.get(f, "customer"), "only_when": ""}
+            for f in CHECKLIST if f not in have]
+    return classify(text), sorted(have & set(CHECKLIST)), gaps
 
 
 if __name__ == "__main__":
-    for c in [
-        "After yesterday's update our logs stopped arriving. DemoCollector 2.4.4.",
-        "Getting 401 unauthorized from the ingestion API on DemoCollector 2.4.4.",
-        "The dashboard colours look wrong.",
-    ]:
-        _, needed, missing, _ = triage(c)
-        print(f"\n{c}\n  asks for : {', '.join(missing) or 'nothing'}  ({len(missing)} questions)")
+    for t in ["Ping monitoring cannot get a response from the F5.",
+              "Licence registration failed with the new key file."]:
+        kind, known, gaps = triage(t)
+        print(t)
+        print("   asks:", ", ".join(g["fact"] for g in gaps) or "nothing")

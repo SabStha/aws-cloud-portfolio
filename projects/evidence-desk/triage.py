@@ -14,6 +14,7 @@ TYPES = {t["key"]: t for t in RULES["problem_types"]}
 FACT_CUES = RULES["fact_cues"]
 LABELS = RULES["fact_labels"]
 SOURCES = RULES["fact_sources"]
+QUESTIONS = RULES["questions"]   # the wording sent to the customer, English and Japanese
 VERSION_RE = re.compile(r"\b\d+\.\d+(\.\d+)?\b")
 
 
