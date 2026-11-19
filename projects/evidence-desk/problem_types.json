@@ -204,7 +204,13 @@
         "requirement",
         "希望",
         "要望",
-        "したい"
+        "したい",
+        "機能はありますか",
+        "可能ですか",
+        "動作しますか",
+        "マニュアルはありますか",
+        "does it have",
+        "is there a"
       ],
       "facts": {
         "product": "Availability is per product.",
@@ -272,6 +278,89 @@
         "product": "The answer comes from that product's own specification page."
       },
       "derived_from": "real inquiry, 17 November 2026: how does syslog work and what is the log format"
+    },
+    {
+      "key": "how_to",
+      "label": "How do I do X?",
+      "cues": [
+        "方法はありますか",
+        "する方法",
+        "手順",
+        "するには",
+        "変更する方法",
+        "バックアップ",
+        "リストア",
+        "再開",
+        "how do i",
+        "how to",
+        "how can i",
+        "steps to"
+      ],
+      "facts": {
+        "product": "The procedure is per product.",
+        "version": "Steps can differ by version."
+      },
+      "derived_from": "real FAQ: backup/restore, change timezone, restart - 'する方法はありますか'"
+    },
+    {
+      "key": "performance",
+      "label": "Something is slow",
+      "cues": [
+        "遅い",
+        "改善方法",
+        "重い",
+        "パフォーマンス",
+        "切り替わりが遅",
+        "slow",
+        "performance",
+        "laggy",
+        "sluggish"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "x",
+        "os": "Performance depends on the host."
+      },
+      "derived_from": "real FAQ: '画面の切り替わりが遅いのですが、改善方法はありますか'"
+    },
+    {
+      "key": "status_meaning",
+      "label": "What does this status / message mean?",
+      "cues": [
+        "どのような状況",
+        "どういう状態",
+        "どうなりますか",
+        "を示している",
+        "表示されますが",
+        "what does",
+        "what is the meaning",
+        "means"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "The status set changes between versions."
+      },
+      "derived_from": "real FAQ: '「Pending remainingCapacity」はどのような状況を示しているのでしょうか'"
+    },
+    {
+      "key": "compatibility_impact",
+      "label": "Will this change affect operation?",
+      "cues": [
+        "影響",
+        "注意点",
+        "影響ない",
+        "windows update",
+        "impact",
+        "affect",
+        "side effect",
+        "compatib"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "x",
+        "os": "x"
+      },
+      "derived_from": "real FAQ: 'Windows Updateの影響や注意点はありますか', 'アドレスの変更が発生しても動作に影響ないでしょうか'"
     }
   ],
   "fact_cues": {
@@ -505,6 +594,11 @@
       "action": "three problem types added, recent_change removed from unknown_fallback",
       "reason": "four real inquiries were run through the engine on 17 Nov 2026 and three of the four were not recognised. The nine original types came from reading documentation, which describes faults. Real customers also ask about procedures, concepts and limits. The fallback was telling the customer to explain what changed on a question about a device limit, where nothing had changed.",
       "provenance": "real inquiries, not derived from the corpus"
+    },
+    {
+      "action": "added how_to, performance, status_meaning, compatibility_impact; widened feature_question",
+      "reason": "the 291-question grounded inquiry book (mined from the real FAQ) left these question classes unrecognised. Every cue is taken from a real FAQ question.",
+      "provenance": "real FAQ questions, 19 November 2026"
     }
   ]
 }
