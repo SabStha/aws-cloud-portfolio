@@ -1,2 +1,5 @@
 logstare_kb.json
 kb-research/
+corpus_manifest.json
+lsc_build/
+.venv/
