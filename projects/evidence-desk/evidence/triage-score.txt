@@ -1,0 +1,55 @@
+
+triage     problem type 35/35   questions right 34/35   total questions asked 62
+   T-03  type log_collection_stopped -> log_collection_stopped
+        want ['collection_method', 'log_source', 'os']
+        got  ['collection_method', 'log_source', 'os', 'recent_change']
+
+checklist  problem type 35/35   questions right 19/35   total questions asked 107
+   T-03  type log_collection_stopped -> fixed_checklist
+        want ['collection_method', 'log_source', 'os']
+        got  ['collection_method', 'log_source', 'os', 'recent_change']
+   T-07  type auth_error -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-08  type auth_error -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']
+   T-09  type auth_error -> fixed_checklist
+        want ['recent_change']
+        got  ['collection_method', 'log_source', 'os', 'recent_change']
+   T-10  type auth_error -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']
+   T-11  type auth_error -> fixed_checklist
+        want ['product', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'version']
+   T-12  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-13  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-14  type None -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']
+   T-15  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-19  type auth_error -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']
+   T-26  type auth_error -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']
+   T-29  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-30  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-31  type None -> fixed_checklist
+        want ['product', 'recent_change', 'version']
+        got  ['collection_method', 'log_source', 'os', 'product', 'recent_change', 'version']
+   T-32  type auth_error -> fixed_checklist
+        want []
+        got  ['collection_method', 'log_source', 'os']

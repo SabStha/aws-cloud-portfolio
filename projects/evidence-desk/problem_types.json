@@ -1,0 +1,604 @@
+{
+  "_comment": "Support knowledge, not code. Derived from the structure of a real public corpus, with fictional product names. Tell Claude what to change in plain words.",
+  "_derivation": "Problem types come from the real troubleshooting article inventory. Required facts come from the branch points inside those articles and from documented OS and licence prerequisites.",
+  "problem_types": [
+    {
+      "key": "ui_unreachable",
+      "label": "Login screen does not appear",
+      "cues": [
+        "login screen",
+        "login page",
+        "web screen",
+        "cannot access",
+        "does not open",
+        "browser",
+        "管理画面",
+        "ログイン画面",
+        "表示されない"
+      ],
+      "facts": {
+        "product": "Each product serves its interface differently.",
+        "os": "The service check differs: a Windows service versus a Linux process.",
+        "ssl_enabled": "With SSL on, the address is https on a different port; with it off, plain http. Giving the wrong one looks like an outage.",
+        "port_changed": "A changed web port must be appended to the address, or the page never loads."
+      },
+      "derived_from": "ref-190906_02, whose own steps branch on exactly these two settings"
+    },
+    {
+      "key": "service_wont_start",
+      "label": "Service will not start",
+      "cues": [
+        "will not start",
+        "won't start",
+        "does not start",
+        "service",
+        "daemon",
+        "起動しない",
+        "サービス"
+      ],
+      "facts": {
+        "product": "Different products, different start mechanism.",
+        "version": "The Java requirement changed between versions, and a mismatched JDK stops startup.",
+        "os": "Windows runs it as a service; Linux as a process from a shell script.",
+        "recent_change": "A failure after an upgrade points at the upgrade; one on a new install points at setup."
+      },
+      "derived_from": "ref-190906_01 (Windows), the JDK change in v1.8.0, and the verified-JDK article"
+    },
+    {
+      "key": "service_wont_stop",
+      "label": "Service will not stop, or a process remains",
+      "cues": [
+        "will not stop",
+        "won't stop",
+        "still running",
+        "process remains",
+        "kill",
+        "停止しない",
+        "プロセスが残る"
+      ],
+      "facts": {
+        "os": "The stop path is a script on Linux and a service on Windows.",
+        "recent_change": "A firewall rule added for an unrelated fix is a known cause of this."
+      },
+      "derived_from": "lsc_systemstopped (firewalld direct rule) and snp-190206_01 (stop/start sequencing)"
+    },
+    {
+      "key": "log_not_received",
+      "label": "Logs are not arriving",
+      "cues": [
+        "logs",
+        "not arriving",
+        "not received",
+        "collecting",
+        "collection",
+        "collected",
+        "ログ",
+        "収集",
+        "受信できない",
+        "log file",
+        "log data",
+        "log transfer"
+      ],
+      "facts": {
+        "product": "Log collection is not in every product or tier.",
+        "licence_tier": "Syslog and WMI collection are absent from some paid tiers. Check the licence before troubleshooting.",
+        "collection_method": "Syslog, WMI, FTP, SCP and REST API each have their own article and their own failure modes.",
+        "os": "Linux syslog collection needs root; Linux WMI collection needs the wmi package.",
+        "device_vendor": {
+          "why": "Some devices have their own article for why their logs do not arrive.",
+          "depends_on": {
+            "fact": "collection_method",
+            "values": [
+              "syslog",
+              "snmp"
+            ],
+            "prefix": "If the logs come by syslog or SNMP from a network device: ",
+            "only_when": "the logs come by syslog or SNMP from a network device"
+          }
+        },
+        "recent_change": "Collection that stopped after an upgrade is a different investigation from one that never started."
+      },
+      "derived_from": "ref-230608_01, ref-191031_02, the nine per-method collection articles, and the OS prerequisites on the spec page"
+    },
+    {
+      "key": "monitoring_no_data",
+      "label": "Monitoring returns no data",
+      "cues": [
+        "no data",
+        "not retrieved",
+        "cannot get",
+        "snmp",
+        "ping",
+        "monitoring",
+        "監視",
+        "取得できない",
+        "取得失敗"
+      ],
+      "facts": {
+        "product": "Monitoring is not in every product or tier.",
+        "licence_tier": "Port monitoring is paid-only; some monitoring is absent from log-only tiers.",
+        "version": "The 'acquisition failed' status was replaced by caution and warning in v2.4.4, so older guidance describes a status that no longer exists.",
+        "device_vendor": "Vendor-specific articles exist for the common firewalls.",
+        "snmp_version": {
+          "why": "SNMP v1 is not enough for the item scan; v2 or above is required.",
+          "only_if_text": [
+            "snmp",
+            "監視項目",
+            "スキャン"
+          ]
+        }
+      },
+      "derived_from": "ref-191031_01, snp-191119_01, ref-200825_01 (paid only), and the v2.4.4 status change"
+    },
+    {
+      "key": "scan_empty",
+      "label": "Monitoring item scan finds nothing",
+      "cues": [
+        "scan",
+        "no items",
+        "item scan",
+        "nothing found",
+        "監視項目",
+        "スキャン"
+      ],
+      "facts": {
+        "snmp_version": "The scan needs SNMP v2 or above on the target.",
+        "device_vendor": "Community string and MIB support vary by device."
+      },
+      "derived_from": "snp-191119_01, whose checklist is exactly these"
+    },
+    {
+      "key": "disk_full",
+      "label": "Disk space exhausted on the collector host",
+      "cues": [
+        "disk",
+        "space",
+        "full",
+        "storage",
+        "no space",
+        "容量",
+        "ディスク"
+      ],
+      "facts": {
+        "os": "The cleanup procedure has separate Windows and Linux articles.",
+        "version": "Moving the log directory was impossible before v2.0.0, so the answer depends on the version.",
+        "licence_tier": "Free-tier retention is fixed at 10 days, which changes what can be freed."
+      },
+      "derived_from": "ref-190725_01 and _02 (the OS pair), snp-191031_03 (the v2.0.0 boundary)"
+    },
+    {
+      "key": "licence_problem",
+      "label": "Licence registration or expiry",
+      "cues": [
+        "licence",
+        "license",
+        "registration failed",
+        "expired",
+        "key file",
+        "ライセンス",
+        "登録できない"
+      ],
+      "facts": {
+        "product": "The licence model differs per product: per server, per device, or per user.",
+        "licence_tier": "What is restricted depends on the tier."
+      },
+      "derived_from": "ref-230628_01, ref-200520_01, FAQ licensing section"
+    },
+    {
+      "key": "feature_question",
+      "label": "Is this feature available to me?",
+      "cues": [
+        "can i",
+        "is it possible",
+        "does it support",
+        "available",
+        "feature",
+        "対応していますか",
+        "できますか",
+        "wants",
+        "want",
+        "would like",
+        "asking for",
+        "requesting",
+        "need",
+        "requirement",
+        "希望",
+        "要望",
+        "したい",
+        "機能はありますか",
+        "可能ですか",
+        "動作しますか",
+        "マニュアルはありますか",
+        "does it have",
+        "is there a"
+      ],
+      "facts": {
+        "product": "Availability is per product.",
+        "licence_tier": "Availability is per licence tier. Most of these are answerable from the capability table with no search at all."
+      },
+      "derived_from": "the feature matrices on the spec page and in the brochures"
+    },
+    {
+      "key": "upgrade_procedure",
+      "label": "How to upgrade, and what it depends on",
+      "cues": [
+        "upgrade from",
+        "upgrade to",
+        "update from",
+        "update to",
+        "dependencies",
+        "dependency",
+        "prerequisite",
+        "バージョンアップ",
+        "アップグレード手順"
+      ],
+      "facts": {
+        "product": "Each product has its own upgrade path and its own release notes.",
+        "version": "The version they are on now decides which upgrade steps apply and which release notes to read.",
+        "os": "The upgrade procedure differs between Windows and Linux."
+      },
+      "derived_from": "real inquiry, 17 November 2026: how do I upgrade from 2.4.0 to 2.9.1, does it have dependencies"
+    },
+    {
+      "key": "capacity_limit",
+      "label": "A licence or capacity limit has been reached",
+      "cues": [
+        "increase",
+        "how many",
+        "maximum",
+        "device limit",
+        "licence limit",
+        "license limit",
+        "devices registered",
+        "上限",
+        "登録台数"
+      ],
+      "facts": {
+        "product": "Limits are per product.",
+        "licence_tier": "The limit IS the licence: the free tier allows 10 devices, the paid tiers allow more. This is the answer, not a step towards it.",
+        "device_count": "The current count against the limit says whether this needs a licence change or a configuration fix."
+      },
+      "derived_from": "real inquiry, 17 November 2026: 1000 devices registered, how do I increase it to 1001"
+    },
+    {
+      "key": "how_it_works",
+      "label": "How something works, or what a format is",
+      "cues": [
+        "how does",
+        "what is the format",
+        "what format",
+        "log format",
+        "specification",
+        "spec sheet",
+        "とは",
+        "仕様",
+        "どのように"
+      ],
+      "facts": {
+        "product": "The answer comes from that product's own specification page."
+      },
+      "derived_from": "real inquiry, 17 November 2026: how does syslog work and what is the log format"
+    },
+    {
+      "key": "how_to",
+      "label": "How do I do X?",
+      "cues": [
+        "方法はありますか",
+        "する方法",
+        "手順",
+        "するには",
+        "変更する方法",
+        "バックアップ",
+        "リストア",
+        "再開",
+        "how do i",
+        "how to",
+        "how can i",
+        "steps to"
+      ],
+      "facts": {
+        "product": "The procedure is per product.",
+        "version": "Steps can differ by version."
+      },
+      "derived_from": "real FAQ: backup/restore, change timezone, restart - 'する方法はありますか'"
+    },
+    {
+      "key": "performance",
+      "label": "Something is slow",
+      "cues": [
+        "遅い",
+        "改善方法",
+        "重い",
+        "パフォーマンス",
+        "切り替わりが遅",
+        "slow",
+        "performance",
+        "laggy",
+        "sluggish"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "x",
+        "os": "Performance depends on the host."
+      },
+      "derived_from": "real FAQ: '画面の切り替わりが遅いのですが、改善方法はありますか'"
+    },
+    {
+      "key": "status_meaning",
+      "label": "What does this status / message mean?",
+      "cues": [
+        "どのような状況",
+        "どういう状態",
+        "どうなりますか",
+        "を示している",
+        "表示されますが",
+        "what does",
+        "what is the meaning",
+        "means"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "The status set changes between versions."
+      },
+      "derived_from": "real FAQ: '「Pending remainingCapacity」はどのような状況を示しているのでしょうか'"
+    },
+    {
+      "key": "compatibility_impact",
+      "label": "Will this change affect operation?",
+      "cues": [
+        "影響",
+        "注意点",
+        "影響ない",
+        "windows update",
+        "impact",
+        "affect",
+        "side effect",
+        "compatib"
+      ],
+      "facts": {
+        "product": "x",
+        "version": "x",
+        "os": "x"
+      },
+      "derived_from": "real FAQ: 'Windows Updateの影響や注意点はありますか', 'アドレスの変更が発生しても動作に影響ないでしょうか'"
+    }
+  ],
+  "fact_cues": {
+    "product": [
+      "democollector",
+      "demoreporter",
+      "demoquery",
+      "democloud",
+      "demomanager"
+    ],
+    "os": [
+      "windows",
+      "linux",
+      "ubuntu",
+      "centos",
+      "rhel",
+      "alma",
+      "red hat"
+    ],
+    "licence_tier": [
+      "free",
+      "limited",
+      "pro",
+      "monitor licence",
+      "log licence",
+      "無償",
+      "有償"
+    ],
+    "collection_method": [
+      "syslog",
+      "wmi",
+      "ftp",
+      "scp",
+      "http",
+      "copy",
+      "move",
+      "rest api",
+      "cloudwatch",
+      "netflow",
+      "収集方式"
+    ],
+    "device_vendor": [
+      "fortigate",
+      "fortinet",
+      "palo alto",
+      "paloalto",
+      "cisco",
+      "yamaha",
+      "sonicwall",
+      "watchguard",
+      "f5",
+      "a10"
+    ],
+    "snmp_version": [
+      "snmpv1",
+      "snmpv2",
+      "snmpv3",
+      "snmp v1",
+      "snmp v2",
+      "snmp v3"
+    ],
+    "ssl_enabled": [
+      "https",
+      "ssl",
+      "tls enabled",
+      "ssl_enable"
+    ],
+    "port_changed": [
+      "port changed",
+      "changed the port",
+      "custom port",
+      "8443",
+      "ポート変更"
+    ],
+    "recent_change": [
+      "upgrade",
+      "updated",
+      "update",
+      "changed",
+      "change",
+      "rotated",
+      "reinstalled",
+      "migrated",
+      "migration",
+      "never worked",
+      "worked before",
+      "new install",
+      "nothing was changed",
+      "nothing changed",
+      "reboot",
+      "アップデート",
+      "変更",
+      "以降",
+      "移行"
+    ],
+    "device_count": [
+      "devices registered",
+      "registered devices",
+      "登録台数",
+      "台数"
+    ]
+  },
+  "questions": {
+    "product": [
+      "Which product is affected?",
+      "対象の製品をご教示ください。"
+    ],
+    "version": [
+      "Which version and build is installed?",
+      "ご利用中のバージョンとビルド番号をご教示ください。"
+    ],
+    "os": [
+      "Which OS is it running on?",
+      "稼働中の OS をご教示ください。"
+    ],
+    "licence_tier": [
+      "Which licence is this environment on?",
+      "ご利用中のライセンス種別をご教示ください。"
+    ],
+    "collection_method": [
+      "How are the logs collected: syslog, WMI, FTP, SCP, REST API?",
+      "ログの収集方式をご教示ください。"
+    ],
+    "device_vendor": [
+      "Which device or vendor is being monitored?",
+      "監視対象の機器・ベンダーをご教示ください。"
+    ],
+    "snmp_version": [
+      "Which SNMP version is enabled on the target?",
+      "監視対象で有効な SNMP バージョンをご教示ください。"
+    ],
+    "ssl_enabled": [
+      "Is SSL/HTTPS enabled on the collector?",
+      "コレクターで SSL(HTTPS) を有効にされていますか。"
+    ],
+    "port_changed": [
+      "Has the web access port been changed from the default?",
+      "Web アクセスポートを既定値から変更されていますか。"
+    ],
+    "recent_change": [
+      "Did this work before, and did anything change just before it stopped?",
+      "以前は正常に動作していましたか。停止直前に変更した点はございますか。"
+    ],
+    "device_count": [
+      "How many devices are registered, and what is the licence limit?",
+      "登録台数とライセンス上限をご教示ください。"
+    ]
+  },
+  "unknown_fallback": {
+    "product": "Needed for any problem, whatever it turns out to be.",
+    "version": "Needed for any problem, whatever it turns out to be."
+  },
+  "evidence_rules": [
+    {
+      "rule": "exclude_merged_stubs",
+      "what": "A document whose body is only a pointer to another article carries no evidence. Follow the pointer or discard it.",
+      "why": "12 of 18 specification articles in the real corpus are stubs of exactly this kind, and they remain indexed."
+    },
+    {
+      "rule": "no_upper_bound_means_unknown",
+      "what": "A document stating only a lower bound ('from v1.7.0') is not evidence that it still applies to the current version. Treat its applicability as open, not as current.",
+      "why": "No article in the real corpus states an upper bound, so 'it does not say it stopped applying' carries no information."
+    },
+    {
+      "rule": "prefer_the_correction",
+      "what": "Where a newer document or release note contradicts an older claim, the claim is superseded even when the older document is still published.",
+      "why": "Two specification articles are actively false for current versions and say so only in an appended note."
+    },
+    {
+      "rule": "missing_os_label_is_unknown",
+      "what": "A document with no OS label does not apply to both. Its applicability is unknown and must be established another way.",
+      "why": "46 of 105 reference articles state neither a version nor an OS."
+    },
+    {
+      "rule": "age_signal_is_unreliable",
+      "what": "Do not use the published age banner as a staleness signal. Use the release history instead: a document is suspect when a release after its last update changed what it describes.",
+      "why": "The banner says it counts from the posting date but is computed from the last update, and understates age by years."
+    },
+    {
+      "rule": "capability_before_search",
+      "what": "If the capability table can answer whether a feature exists for this product and licence, answer from it and do not search.",
+      "why": "Deterministic and always correct, where retrieval is neither."
+    }
+  ],
+  "_conditional": "A fact may depend on another. When the fact it depends on is unknown, its question is asked with a conditional prefix so the customer still answers in one reply. When that fact is known and does not match, the question is dropped entirely.",
+  "fact_labels": {
+    "product": "product",
+    "version": "version and build",
+    "os": "operating system",
+    "licence_tier": "licence tier",
+    "collection_method": "collection method",
+    "device_vendor": "device vendor and model",
+    "snmp_version": "SNMP version on the target",
+    "ssl_enabled": "SSL/HTTPS enabled?",
+    "port_changed": "web port changed from default?",
+    "recent_change": "what changed, and did it ever work",
+    "device_count": "how many devices are registered, and the licence limit"
+  },
+  "fact_sources": {
+    "product": "internal",
+    "version": "internal",
+    "licence_tier": "internal",
+    "os": "customer",
+    "collection_method": "customer",
+    "device_vendor": "customer",
+    "snmp_version": "customer",
+    "ssl_enabled": "customer",
+    "port_changed": "customer",
+    "recent_change": "customer",
+    "device_count": "customer"
+  },
+  "_output_audience": "The engine's output is for the support engineer, not the customer. Facts are split into what the engineer can look up internally and what only the customer can answer. Customer-facing wording is a separate, later concern.",
+  "_cue_decisions": [
+    {
+      "cue": "log",
+      "action": "removed from log_not_received",
+      "reason": "the licence name Limited-Log contains it, so a capability question about licences was classified as a log fault and three irrelevant questions were put to the customer (test case T1)",
+      "replaced_with": [
+        "log file",
+        "log data",
+        "log transfer"
+      ],
+      "kept": "the Japanese cue ログ, which does not collide"
+    },
+    {
+      "fact": "snmp_version in monitoring_no_data",
+      "action": "depends_on device_vendor replaced with only_if_text",
+      "reason": "the dependency said skip this when the vendor is known, but the intent was ask this only when SNMP is in play. On a real SNMP fault with a known vendor it stayed silent about the one fact that decides the case (test case K1)."
+    },
+    {
+      "action": "three problem types added, recent_change removed from unknown_fallback",
+      "reason": "four real inquiries were run through the engine on 17 Nov 2026 and three of the four were not recognised. The nine original types came from reading documentation, which describes faults. Real customers also ask about procedures, concepts and limits. The fallback was telling the customer to explain what changed on a question about a device limit, where nothing had changed.",
+      "provenance": "real inquiries, not derived from the corpus"
+    },
+    {
+      "action": "added how_to, performance, status_meaning, compatibility_impact; widened feature_question",
+      "reason": "the 291-question grounded inquiry book (mined from the real FAQ) left these question classes unrecognised. Every cue is taken from a real FAQ question.",
+      "provenance": "real FAQ questions, 19 November 2026"
+    }
+  ]
+}

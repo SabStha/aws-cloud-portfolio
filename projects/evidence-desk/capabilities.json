@@ -1,0 +1,436 @@
+{
+  "_comment": "Which features exist, and within which limits, for each product and licence. Fictional product names, structure taken from real public spec and brochure pages. A question answerable from this table needs no document search and no AI.",
+  "products": {
+    "DemoCollector": {
+      "deployment": "on-premises",
+      "tiers": [
+        "Free",
+        "Limited-Monitor",
+        "Limited-Log",
+        "Pro"
+      ],
+      "os": [
+        "Windows Server 2012-2025",
+        "RHEL 8/9",
+        "AlmaLinux 8/9"
+      ],
+      "os_notes": [
+        "Windows Server Core cannot be installed on."
+      ],
+      "environment": [
+        "clock must be synchronised",
+        "DNS or host-name resolution must work",
+        "outbound 443/TCP to the vendor's update and notice endpoints"
+      ]
+    },
+    "DemoReporter": {
+      "deployment": "SaaS",
+      "tiers": [
+        "Monitor",
+        "Log"
+      ],
+      "os": [],
+      "os_notes": [],
+      "environment": []
+    },
+    "DemoQuery": {
+      "deployment": "on-premises",
+      "tiers": [
+        "Monitor",
+        "Log"
+      ],
+      "os": [
+        "RHEL 8/9",
+        "AlmaLinux 8/9"
+      ],
+      "os_notes": [
+        "Linux only. There is no Windows build."
+      ],
+      "environment": []
+    },
+    "DemoCloud": {
+      "deployment": "SaaS",
+      "tiers": [
+        "standard"
+      ],
+      "os": [],
+      "os_notes": [],
+      "environment": []
+    }
+  },
+  "features": [
+    {
+      "key": "ping_monitoring",
+      "label": "Ping (alive) monitoring",
+      "available": {
+        "DemoCollector": [
+          "Free",
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "snmp_monitoring",
+      "label": "SNMP and SNMP trap monitoring",
+      "available": {
+        "DemoCollector": [
+          "Free",
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "port_monitoring",
+      "label": "Port status monitoring",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "url_monitoring",
+      "label": "URL (external) monitoring",
+      "available": {
+        "DemoCollector": [
+          "Free",
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "syslog_receive",
+      "label": "Syslog collection (UDP/TCP/TLS)",
+      "available": {
+        "DemoCollector": [
+          "Free",
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "wmi_collection",
+      "label": "Windows event log collection by WMI",
+      "available": {
+        "DemoCollector": [
+          "Free",
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "file_collection",
+      "label": "File collection (FTP, SCP, COPY, MOVE)",
+      "available": {
+        "DemoCollector": [
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "compression_encryption",
+      "label": "Data compression and encryption",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "csv_export",
+      "label": "Data export to CSV",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "dsv_edit",
+      "label": "Editing the status viewer layout",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Limited-Log",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "multi_dashboard",
+      "label": "Creating multiple dashboards",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "complex_log_search",
+      "label": "Log search with combined conditions",
+      "available": {
+        "DemoCollector": [
+          "Limited-Log",
+          "Pro"
+        ],
+        "DemoReporter": [
+          "Log"
+        ],
+        "DemoQuery": [
+          "Log"
+        ]
+      }
+    },
+    {
+      "key": "monitoring_db_update",
+      "label": "Monitoring database update",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Pro"
+        ]
+      }
+    },
+    {
+      "key": "email_alert",
+      "label": "Alert notification by email",
+      "available": {
+        "DemoCollector": [
+          "Limited-Monitor",
+          "Pro"
+        ],
+        "DemoReporter": [
+          "Monitor"
+        ],
+        "DemoQuery": [
+          "Monitor"
+        ]
+      }
+    },
+    {
+      "key": "chat_alert",
+      "label": "Alert notification to Teams, Slack or Chatwork",
+      "available": {
+        "DemoReporter": [
+          "Monitor"
+        ],
+        "DemoQuery": [
+          "Monitor"
+        ]
+      }
+    },
+    {
+      "key": "log_parsing",
+      "label": "Log parsing and format definition",
+      "available": {
+        "DemoReporter": [
+          "Log"
+        ],
+        "DemoQuery": [
+          "Log"
+        ]
+      }
+    },
+    {
+      "key": "scheduled_report",
+      "label": "Scheduled report generation",
+      "available": {
+        "DemoReporter": [
+          "Monitor",
+          "Log"
+        ],
+        "DemoQuery": [
+          "Monitor",
+          "Log"
+        ]
+      }
+    },
+    {
+      "key": "capacity_forecast",
+      "label": "Capacity forecasting",
+      "available": {
+        "DemoReporter": [
+          "Monitor"
+        ],
+        "DemoQuery": [
+          "Monitor"
+        ]
+      }
+    },
+    {
+      "key": "ai_analysis",
+      "label": "Generative AI analysis of reports and alerts",
+      "available": {
+        "DemoQuery": [
+          "Log"
+        ]
+      }
+    }
+  ],
+  "limits": {
+    "DemoCollector": {
+      "Free": {
+        "devices": 10,
+        "items_per_device": 5,
+        "retention_days": 10
+      },
+      "Limited-Monitor": {
+        "devices": null,
+        "items_per_device": null,
+        "retention_days": null
+      },
+      "Limited-Log": {
+        "devices": null,
+        "items_per_device": null,
+        "retention_days": null
+      },
+      "Pro": {
+        "devices": null,
+        "items_per_device": null,
+        "retention_days": null
+      }
+    }
+  },
+  "limit_labels": {
+    "devices": "monitored devices",
+    "items_per_device": "monitoring items per device",
+    "retention_days": "days of data retention"
+  },
+  "prerequisites": [
+    {
+      "feature": "syslog_receive",
+      "os": "linux",
+      "requires": "the collector must be started as the root user"
+    },
+    {
+      "feature": "wmi_collection",
+      "os": "linux",
+      "requires": "the wmi package must be installed"
+    },
+    {
+      "feature": "syslog_receive",
+      "os": "any",
+      "requires": "the collector host must have a fixed IP address"
+    }
+  ],
+  "feature_cues": {
+    "chat_alert": [
+      "teams",
+      "slack",
+      "chatwork",
+      "chat notification",
+      "チャット"
+    ],
+    "email_alert": [
+      "email alert",
+      "mail notification",
+      "メール通知"
+    ],
+    "syslog_receive": [
+      "syslog"
+    ],
+    "wmi_collection": [
+      "wmi",
+      "windows event log"
+    ],
+    "file_collection": [
+      "file collection",
+      "ftp",
+      "scp",
+      "copy(local)",
+      "move(local)"
+    ],
+    "ping_monitoring": [
+      "ping monitoring",
+      "死活監視"
+    ],
+    "snmp_monitoring": [
+      "snmp monitoring",
+      "snmp trap"
+    ],
+    "port_monitoring": [
+      "port monitoring",
+      "port status",
+      "ポート監視"
+    ],
+    "url_monitoring": [
+      "url monitoring",
+      "external monitoring",
+      "外形監視"
+    ],
+    "complex_log_search": [
+      "combined conditions",
+      "complex search",
+      "複合条件"
+    ],
+    "log_parsing": [
+      "parsing",
+      "parser",
+      "log format",
+      "パース"
+    ],
+    "scheduled_report": [
+      "scheduled report",
+      "periodic report",
+      "定期レポート"
+    ],
+    "capacity_forecast": [
+      "capacity forecast",
+      "forecasting",
+      "キャパシティ"
+    ],
+    "ai_analysis": [
+      "ai analysis",
+      "generative ai",
+      "生成ai"
+    ],
+    "csv_export": [
+      "csv export",
+      "export to csv",
+      "csv出力"
+    ],
+    "multi_dashboard": [
+      "multiple dashboards",
+      "複数のダッシュボード"
+    ]
+  },
+  "tier_cues": {
+    "Free": [
+      "free",
+      "無償"
+    ],
+    "Limited-Monitor": [
+      "limited-monitor",
+      "limited monitor",
+      "limited監視"
+    ],
+    "Limited-Log": [
+      "limited-log",
+      "limited log",
+      "limitedログ"
+    ],
+    "Pro": [
+      "pro"
+    ],
+    "Monitor": [
+      "monitor licence",
+      "monitor license"
+    ],
+    "Log": [
+      "log licence",
+      "log license"
+    ]
+  }
+}

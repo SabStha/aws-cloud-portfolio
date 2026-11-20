@@ -1,0 +1,478 @@
+[
+ {
+  "id": "A1",
+  "text": "The login screen does not open in the browser after they upgraded to 3.4.2.",
+  "expect_kind": "ui_unreachable",
+  "must_ask": [
+   "product",
+   "os",
+   "ssl_enabled",
+   "port_changed"
+  ],
+  "must_not_ask": [
+   "licence_tier",
+   "collection_method",
+   "device_vendor",
+   "version"
+  ],
+  "note": "version is stated but this type never needs it"
+ },
+ {
+  "id": "A2",
+  "text": "Customer cannot access the web screen. HTTPS is enabled and the port is 8443.",
+  "expect_kind": "ui_unreachable",
+  "must_ask": [
+   "product",
+   "os"
+  ],
+  "must_not_ask": [
+   "ssl_enabled",
+   "port_changed"
+  ],
+  "note": "both settings are stated, so neither may be asked again"
+ },
+ {
+  "id": "B1",
+  "text": "The DemoCollector service will not start on Windows Server after they reinstalled it. Version 2.9.1.",
+  "expect_kind": "service_wont_start",
+  "must_ask": [],
+  "must_not_ask": [
+   "product",
+   "version",
+   "os",
+   "recent_change"
+  ],
+  "note": "a complete inquiry must produce zero questions"
+ },
+ {
+  "id": "B2",
+  "text": "サービスが起動しない。",
+  "expect_kind": "service_wont_start",
+  "must_ask": [
+   "product",
+   "version",
+   "os",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "licence_tier",
+   "collection_method"
+  ],
+  "note": "bare Japanese report, nothing stated"
+ },
+ {
+  "id": "C1",
+  "text": "The process remains after stop and they have to kill it manually. Nothing was changed.",
+  "expect_kind": "service_wont_stop",
+  "must_ask": [
+   "os"
+  ],
+  "must_not_ask": [
+   "product",
+   "version",
+   "recent_change",
+   "licence_tier"
+  ],
+  "note": "one question only; nothing was changed counts as an answer"
+ },
+ {
+  "id": "D1",
+  "text": "Logs from the FortiGate are not arriving. Syslog, DemoCollector 2.4.0 on CentOS.",
+  "expect_kind": "log_not_received",
+  "must_ask": [
+   "licence_tier",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "product",
+   "os",
+   "collection_method",
+   "device_vendor"
+  ],
+  "note": "four facts given, so only two may remain"
+ },
+ {
+  "id": "D2",
+  "text": "ログが受信できない。",
+  "expect_kind": "log_not_received",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "collection_method",
+   "os",
+   "device_vendor",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "version"
+  ],
+  "note": "this type does not use version"
+ },
+ {
+  "id": "E1",
+  "text": "SNMP monitoring returns no data for a Cisco switch. SNMPv2c is enabled.",
+  "expect_kind": "monitoring_no_data",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "version"
+  ],
+  "must_not_ask": [
+   "os",
+   "collection_method",
+   "recent_change",
+   "device_vendor",
+   "snmp_version"
+  ],
+  "note": "every remaining gap is internal: the customer is asked nothing"
+ },
+ {
+  "id": "F1",
+  "text": "Item scan finds nothing on the Yamaha router.",
+  "expect_kind": "scan_empty",
+  "must_ask": [
+   "snmp_version"
+  ],
+  "must_not_ask": [
+   "product",
+   "version",
+   "os",
+   "licence_tier",
+   "device_vendor"
+  ],
+  "note": "scan_empty needs two facts, not six"
+ },
+ {
+  "id": "G1",
+  "text": "The disk is full on the collector. Linux, 2.7.3.",
+  "expect_kind": "disk_full",
+  "must_ask": [
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "os",
+   "version",
+   "product",
+   "recent_change"
+  ],
+  "note": "collector must not trigger collection_method"
+ },
+ {
+  "id": "H1",
+  "text": "Licence registration failed with the new key file.",
+  "expect_kind": "licence_problem",
+  "must_ask": [
+   "product",
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "os",
+   "version",
+   "recent_change"
+  ],
+  "note": "a licence fault is not an OS question"
+ },
+ {
+  "id": "I1",
+  "text": "Customer wants to know if DemoReporter can output a weekly PDF report. They are on the Monitor licence.",
+  "expect_kind": "feature_question",
+  "must_ask": [],
+  "must_not_ask": [
+   "product",
+   "licence_tier",
+   "os",
+   "version"
+  ],
+  "note": "answerable with no search and no questions"
+ },
+ {
+  "id": "T1",
+  "text": "The customer is on the Limited-Log licence and would like to add Windows event log collection. Is it possible?",
+  "expect_kind": "feature_question",
+  "must_ask": [
+   "product"
+  ],
+  "must_not_ask": [
+   "licence_tier",
+   "os",
+   "collection_method",
+   "device_vendor",
+   "recent_change"
+  ],
+  "trap": "the licence NAME contains the word log, which is also a log-fault cue",
+  "note": "capability intent must beat topic vocabulary"
+ },
+ {
+  "id": "T2",
+  "text": "Our auditor asked for a diagram of the data flow.",
+  "expect_kind": null,
+  "must_ask": [
+   "product",
+   "version"
+  ],
+  "must_not_ask": [
+   "os",
+   "licence_tier",
+   "collection_method",
+   "recent_change"
+  ],
+  "trap": "no cue matches anything",
+  "note": "unrecognised, so the customer is asked nothing at all"
+ },
+ {
+  "id": "T3",
+  "text": "Can I run DemoQuery on Windows Server 2022?",
+  "expect_kind": "feature_question",
+  "must_ask": [
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "product",
+   "os",
+   "version"
+  ],
+  "note": "DemoQuery is Linux only, so this is answerable internally"
+ },
+ {
+  "id": "T4",
+  "text": "DemoCollector will not start.",
+  "expect_kind": "service_wont_start",
+  "must_ask": [
+   "version",
+   "os",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "product",
+   "collection_method",
+   "licence_tier"
+  ],
+  "trap": "DemoCollector contains collect",
+  "note": "the word-boundary rule must still hold"
+ },
+ {
+  "id": "T5",
+  "text": "Logs stopped arriving yesterday afternoon.",
+  "expect_kind": "log_not_received",
+  "must_ask": [
+   "recent_change",
+   "product",
+   "licence_tier",
+   "collection_method",
+   "os",
+   "device_vendor"
+  ],
+  "must_not_ask": [
+   "version"
+  ],
+  "trap": "afternoon contains after",
+  "note": "a time of day is not a recent change"
+ },
+ {
+  "id": "J1",
+  "text": "ログイン画面が表示されない。SSL は有効です。",
+  "expect_kind": "ui_unreachable",
+  "must_ask": [
+   "product",
+   "os",
+   "port_changed"
+  ],
+  "must_not_ask": [
+   "ssl_enabled"
+  ],
+  "trap": "ログイン画面 contains ログ, a log-fault cue",
+  "note": "Japanese collision, same shape as T1"
+ },
+ {
+  "id": "J2",
+  "text": "The daemon does not start on Ubuntu. Nothing was changed. DemoCollector 3.1.0.",
+  "expect_kind": "service_wont_start",
+  "must_ask": [],
+  "must_not_ask": [
+   "product",
+   "version",
+   "os",
+   "recent_change"
+  ],
+  "note": "complete, in Linux wording"
+ },
+ {
+  "id": "J3",
+  "text": "Logs are not received. Free licence, DemoCollector 1.9.0, Windows, syslog from a SonicWall. They upgraded last week.",
+  "expect_kind": "log_not_received",
+  "must_ask": [],
+  "must_not_ask": [
+   "product",
+   "licence_tier",
+   "collection_method",
+   "os",
+   "device_vendor",
+   "recent_change"
+  ],
+  "note": "the ideal inquiry: six for six, zero questions"
+ },
+ {
+  "id": "J4",
+  "text": "Ping monitoring cannot get a response from the F5.",
+  "expect_kind": "monitoring_no_data",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "version"
+  ],
+  "must_not_ask": [
+   "device_vendor",
+   "os",
+   "collection_method",
+   "recent_change",
+   "snmp_version"
+  ],
+  "note": "ping, not SNMP, so the SNMP version is irrelevant and must not be asked. My first version of this case demanded it and was wrong."
+ },
+ {
+  "id": "J5",
+  "text": "容量がいっぱいです。",
+  "expect_kind": "disk_full",
+  "must_ask": [
+   "os",
+   "version",
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "product",
+   "recent_change"
+  ],
+  "note": "disk_full does not need the product"
+ },
+ {
+  "id": "J6",
+  "text": "ライセンスが登録できない。",
+  "expect_kind": "licence_problem",
+  "must_ask": [
+   "product",
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "os",
+   "version"
+  ],
+  "note": "both gaps are internal"
+ },
+ {
+  "id": "J7",
+  "text": "DemoQuery は Windows に対応していますか。",
+  "expect_kind": "feature_question",
+  "must_ask": [
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "product",
+   "os",
+   "version"
+  ],
+  "note": "Japanese capability question"
+ },
+ {
+  "id": "J8",
+  "text": "スキャンしても項目が見つかりません。",
+  "expect_kind": "scan_empty",
+  "must_ask": [
+   "snmp_version",
+   "device_vendor"
+  ],
+  "must_not_ask": [
+   "product",
+   "version",
+   "os",
+   "licence_tier"
+  ],
+  "note": "two questions, not six"
+ },
+ {
+  "id": "K1",
+  "text": "SNMP monitoring gets no data from the FortiGate.",
+  "expect_kind": "monitoring_no_data",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "version",
+   "snmp_version"
+  ],
+  "must_not_ask": [
+   "device_vendor",
+   "os",
+   "collection_method",
+   "recent_change"
+  ],
+  "trap": "the vendor is known, which currently suppresses the SNMP question",
+  "note": "SNMP v1 is not enough for the item scan, so the version must be asked whenever SNMP is in play, vendor known or not"
+ },
+ {
+  "id": "R1",
+  "text": "How do I upgrade from 2.4.0 to 2.9.1? Does it have dependencies?",
+  "expect_kind": "upgrade_procedure",
+  "must_ask": [
+   "product",
+   "os"
+  ],
+  "must_not_ask": [
+   "recent_change",
+   "version",
+   "licence_tier",
+   "collection_method",
+   "device_vendor"
+  ],
+  "note": "REAL inquiry. The version is stated, so only the OS is missing."
+ },
+ {
+  "id": "R2",
+  "text": "How does syslog work and what is the log format?",
+  "expect_kind": "how_it_works",
+  "must_ask": [
+   "product"
+  ],
+  "must_not_ask": [
+   "recent_change",
+   "os",
+   "version",
+   "licence_tier",
+   "collection_method"
+  ],
+  "note": "REAL inquiry. A concept question: nothing to diagnose, nothing to ask."
+ },
+ {
+  "id": "R3",
+  "text": "My logs are not being collected. Why?",
+  "expect_kind": "log_not_received",
+  "must_ask": [
+   "product",
+   "licence_tier",
+   "collection_method",
+   "os",
+   "device_vendor",
+   "recent_change"
+  ],
+  "must_not_ask": [
+   "version",
+   "device_count"
+  ],
+  "note": "REAL inquiry. A genuine fault with nothing stated, so the questions are earned."
+ },
+ {
+  "id": "R4",
+  "text": "My PC is Windows Server 2025 and we have 1000 devices registered. How do I increase it to 1001?",
+  "expect_kind": "capacity_limit",
+  "must_ask": [
+   "product",
+   "licence_tier"
+  ],
+  "must_not_ask": [
+   "device_count",
+   "recent_change",
+   "os",
+   "version",
+   "collection_method"
+  ],
+  "note": "REAL inquiry. The count is stated and the limit is the licence, so the customer is asked nothing."
+ }
+]

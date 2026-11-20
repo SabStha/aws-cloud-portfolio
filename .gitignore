@@ -1,16 +1,16 @@
+# Build output
+# Python
 # Secrets: never commit
-.env
-*.pem
-*.key
-credentials
-.aws/
-*.tfvars
 # Terraform
-.terraform/
+*.key
+*.pem
 *.tfstate
 *.tfstate.*
-# Python
-__pycache__/
-.venv/
-# Build output
+*.tfvars
 *.zip
+.aws/
+.env
+.terraform/
+.venv/
+__pycache__/
+credentials

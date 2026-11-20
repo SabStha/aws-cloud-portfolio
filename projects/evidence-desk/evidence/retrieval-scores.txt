@@ -1,0 +1,31 @@
+test   expected   want       top result score   2nd  right doc on top?
+TC-01  ANSWER     DC-KB-001  DC-KB-001   0.81  0.67  yes
+TC-02  ANSWER     DC-KB-002  DC-KB-008   0.82  0.73  NO
+TC-03  ANSWER     DC-KB-003  DC-KB-003   0.83  0.65  yes
+TC-04  ANSWER     DC-KB-004  DC-KB-004   0.82  0.73  yes
+TC-05  ANSWER     DC-KB-005  DC-KB-005   0.83  0.65  yes
+TC-06  ANSWER     DC-KB-006  DC-KB-006   0.86  0.73  yes
+TC-07  ANSWER     DC-KB-007  DC-KB-007   0.83  0.65  yes
+TC-08  ANSWER     DC-KB-008  DC-KB-008   0.86  0.69  yes
+TC-09  ANSWER     DC-KB-009  DC-KB-009   0.81  0.67  yes
+TC-10  ANSWER     DC-KB-010  DC-KB-010   0.82  0.73  yes
+TC-11  UNRESOLVED -          DC-KB-005   0.81  0.67  
+TC-12  UNRESOLVED -          -           0.00  0.00  
+TC-13  UNRESOLVED -          DC-KB-009   0.81  0.67  
+TC-14  UNRESOLVED -          DC-KB-011   0.86  0.69  
+TC-15  UNRESOLVED -          DC-KB-012   0.82  0.73  
+TC-16  UNRESOLVED -          -           0.00  0.00  
+TC-17  UNRESOLVED -          DC-KB-008   0.82  0.73  
+TC-18  UNRESOLVED -          -           0.00  0.00  
+TC-19  UNRESOLVED (no version: the gate stops before searching)
+TC-20  UNRESOLVED -          DC-KB-006   0.87  0.65  
+TC-21  BLOCKED    -          DC-KB-006   0.82  0.73  
+TC-22  BLOCKED    -          DC-KB-004   0.82  0.73  
+TC-23  UNRESOLVED -          DC-KB-012   0.80  0.71  
+TC-24  BLOCKED    -          DC-KB-003   0.81  0.67  
+TC-25  BLOCKED    -          DC-KB-010   0.82  0.73  
+TC-26  BLOCKED    -          DC-KB-004   0.82  0.73  
+TC-27  BLOCKED    -          DC-KB-012   0.79  0.79  
+TC-28  BLOCKED    -          DC-KB-007   0.81  0.67  
+TC-29  BLOCKED    -          DC-KB-003   0.81  0.67  
+TC-30  BLOCKED    -          DC-KB-012   0.82  0.73  
